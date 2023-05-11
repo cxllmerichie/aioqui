@@ -12,7 +12,7 @@ class Icon:
     IconType = type[QIcon, str, bytes]
     SizeType = type[Size, QSize, tuple[int, int], Ellipsis, None]
 
-    __root = os.path.join(site.getsitepackages()[1], 'qcontext', '.assets')
+    root = os.path.join(site.getsitepackages()[1], 'qcontext', '.assets')
     __icon: QIcon = None
     __size: QSize = None
 
@@ -42,25 +42,24 @@ class Icon:
             pixmap.loadFromData(base64.b64decode(png))
             self.__icon = QIcon(pixmap)
 
-        if isinstance(instance, QIcon):
+        if isinstance(instance, QIcon):  # directly set
             self.__icon = instance
-        elif isinstance(instance, str):
-            # CHECK IF `instance` IS AN ABS PATH
-            if os.path.exists(filepath := instance):
+        elif isinstance(instance, str):  # might be `paths` or `str(bytes)`
+            if os.path.exists(filepath := os.path.join(os.path.abspath(self.root), instance)):
                 self.__icon = QIcon(filepath)
-            elif os.path.exists(filepath := os.path.join(os.path.abspath(self.__root), instance)):
-                self.__icon = QIcon(filepath)
-            elif isinstance((icon_bytes := eval(instance)), bytes):
-                from_bytes(icon_bytes)
             else:
-                raise FileNotFoundError(f'file: {filepath} not found for `Icon`')
+                try:  # handle `eval(intance)` for case if instance is invalid `path`
+                    if isinstance((icon_bytes := eval(instance)), bytes):
+                        from_bytes(icon_bytes)
+                except Exception:
+                    self.__icon = QIcon()
+                    logger.warning(f'{instance=} is invalid path')
         elif isinstance(instance, bytes):
             from_bytes(instance)
         else:
-            raise AttributeError(f'unknown type ({type(instance)}) of instance ({instance}), can not set Icon.icon')
-        # fix of `QPushButton.setDisabled()`
-        pixmap = self.__icon.pixmap(1000)
-        self.icon.addPixmap(pixmap, mode=QIcon.Disabled)
+            self.__icon = QIcon()
+            logger.warning(f'unknown type ({type(instance)}) of instance ({instance}), can not set Icon.icon')
+        self.icon.addPixmap(self.__icon.pixmap(1000), mode=QIcon.Disabled)  # fix of `QPushButton.setDisabled()`
 
     @size.setter
     def size(self, size: SizeType) -> None:

@@ -15,3 +15,5 @@ from .window import Window
 
 from .layout import Layout
 from .spacer import Spacer
+
+from PyQt5.QtWidgets import QWidget
