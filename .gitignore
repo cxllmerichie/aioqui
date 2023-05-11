@@ -1,0 +1,7 @@
+.idea/
+.venv/
+__pycache__/
+
+dist/
+src/qcontext.egg-info/
+*.env
