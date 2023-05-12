@@ -12,8 +12,8 @@ if __name__ == '__main__':
         toml = tomli.loads(file.read())
 
     VERSION: str = toml['project']['version']
-    PYPI_USERNAME: str = os.getenv('PYPI_USERNAME')
-    PYPI_PASSWORD: str = os.getenv('PYPI_PASSWORD')
+    PYPI_USERNAME: str = '__token__'
+    PYPI_PASSWORD: str = os.getenv('PYPI_TOKEN')
 
     commands = [
         dict(orig='python -m build ../ --outdir ../dist', alt='Building...'),

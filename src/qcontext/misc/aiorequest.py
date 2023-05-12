@@ -28,7 +28,7 @@ class Request:
             data: dict[str, Any] = None
     ) -> Any:
         assert (method := method.lower()) in ('get', 'post', 'put', 'delete')
-        async with aiohttp.ClientSession(base_url=await self.base_url, json_serialize=ujson.dumps) as session:
+        async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
             # convert params values to str
             for key, value in params.items() if params else {}:
                 params[key] = str(value)
