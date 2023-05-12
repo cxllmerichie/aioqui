@@ -1,6 +1,6 @@
 from PyQt5.QtGui import QPixmap, QIcon, QImage
 from PyQt5.QtCore import QSize, QBuffer, QIODevice
-from loguru import logger
+# from loguru import logger
 import base64
 import site
 import os
@@ -53,12 +53,12 @@ class Icon:
                         from_bytes(icon_bytes)
                 except Exception:
                     self.__icon = QIcon()
-                    logger.warning(f'{instance=} is invalid path')
+                    # logger.warning(f'{instance=} is invalid path')
         elif isinstance(instance, bytes):
             from_bytes(instance)
         else:
             self.__icon = QIcon()
-            logger.warning(f'unknown type ({type(instance)}) of instance ({instance}), can not set Icon.icon')
+            # logger.warning(f'unknown type ({type(instance)}) of instance ({instance}), can not set Icon.icon')
         self.icon.addPixmap(self.__icon.pixmap(1000), mode=QIcon.Disabled)  # fix of `QPushButton.setDisabled()`
 
     @size.setter
@@ -78,8 +78,8 @@ class Icon:
             raise AttributeError(f'unknown type ({type(size)}) of size ({size}), can not set Icon.size')
 
     def adjusted(self, icon: IconType = None, size: SizeType = None) -> 'Icon':
-        if not icon and not size:
-            logger.warning('Icon.adjusted() called without parameters. Redundant call.')
+        # if not icon and not size:
+        #     logger.warning('Icon.adjusted() called without parameters. Redundant call.')
         if icon:
             self.icon = icon
         if size:
