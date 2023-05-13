@@ -25,19 +25,21 @@ class Request:
             method: str, url: str,
             *,
             params: dict[str, Any] = None, body: dict[str, Any] = None, headers: dict[str, Any] = None,
-            data: dict[str, Any] = None
+            data: dict[str, Any] = None,
+            nobase: bool = False
     ) -> Any:
         assert (method := method.lower()) in ('get', 'post', 'put', 'delete')
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
             # convert params values to str
             for key, value in params.items() if params else {}:
                 params[key] = str(value)
-            request_method = getattr(session, method)
-            async with request_method(await self.__url(url), json=body, params=params, headers=headers, data=data) as response:
+            async with getattr(session, method)(
+                    await self.__url(url, nobase), json=body, params=params, headers=headers, data=data
+            ) as response:
                 return await response.json()
 
-    async def __url(self, url: str):
-        if not (base := await self.base_url):
+    async def __url(self, url: str, nobase: bool = False):
+        if not (base := await self.base_url) or nobase:
             return url
         if base.endswith('/') and url.startswith('/'):
             return base[:-1] + url

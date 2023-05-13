@@ -12,6 +12,7 @@ from .selector import Selector
 from .popup import Popup
 from .statusbar import StatusBar
 from .window import Window
+from .slider import Slider
 
 from .layout import Layout
 from .spacer import Spacer
