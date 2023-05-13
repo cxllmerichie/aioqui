@@ -1,5 +1,5 @@
-from PyQt5.QtGui import QResizeEvent
-from PyQt5.QtWidgets import QMessageBox, QWidget
+from PySide6.QtGui import QResizeEvent
+from PySide6.QtWidgets import QMessageBox, QWidget
 from qasync import asyncSlot
 from typing import Iterable
 
@@ -11,10 +11,10 @@ from .frame import Frame
 
 
 class Popup(Widget):
-    YES = QMessageBox.Yes
-    NO = QMessageBox.No
-    OK = QMessageBox.Ok
-    CANCEL = QMessageBox.Cancel
+    YES = QMessageBox.StandardButton.Yes
+    NO = QMessageBox.StandardButton.No
+    OK = QMessageBox.StandardButton.Ok
+    CANCEL = QMessageBox.StandardButton.Cancel
 
     stylesheet = f'''
         #Popup {{

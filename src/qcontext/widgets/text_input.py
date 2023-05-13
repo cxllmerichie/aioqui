@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QTextEdit, QWidget, QSizePolicy
+from PySide6.QtWidgets import QTextEdit, QWidget, QSizePolicy
 
 from .extensions import ContextObjectExt
 

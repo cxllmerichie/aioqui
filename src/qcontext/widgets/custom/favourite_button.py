@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtGui import QIcon
+from PySide6.QtWidgets import QWidget
+from PySide6.QtGui import QIcon
 from typing import Callable
 from qasync import asyncSlot
 

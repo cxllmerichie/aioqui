@@ -17,4 +17,4 @@ from .slider import Slider
 from .layout import Layout
 from .spacer import Spacer
 
-from PyQt5.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget

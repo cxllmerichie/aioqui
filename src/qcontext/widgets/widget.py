@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QLayout
-from PyQt5.QtCore import Qt
+from PySide6.QtWidgets import QWidget, QLayout
+from PySide6.QtCore import Qt
 
 from .extensions import ContextObjectExt
 

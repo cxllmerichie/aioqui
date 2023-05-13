@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QPushButton, QWidget, QSizePolicy
-from PyQt5.QtCore import QSize
-from PyQt5.QtGui import QIcon
+from PySide6.QtWidgets import QPushButton, QWidget, QSizePolicy
+from PySide6.QtCore import QSize
+from PySide6.QtGui import QIcon
 from contextlib import suppress
 
 from ..misc import Icon

@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QSizePolicy
-from PyQt5.QtCore import Qt
+from PySide6.QtWidgets import QWidget, QSizePolicy
+from PySide6.QtCore import Qt
 
 from ..button import Button
 from ..label import Label

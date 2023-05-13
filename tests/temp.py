@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget
 
-from src.qcontext.widgets import Window, Frame, Layout, Button, Label
+from src.qcontext.widgets import *
 from src.qcontext.qasyncio import AsyncApp
 from src.qcontext import CONTEXT, qasyncio
 
@@ -56,7 +56,7 @@ class App(Window):
 
 if __name__ == '__main__':
     async def run_app():
-        async with AsyncApp():
-            (await App().init()).show()
+        app = await App().init()
+        app.show()
 
     AsyncApp.run(run_app)

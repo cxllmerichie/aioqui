@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QLayoutItem, QSpacerItem
-from PyQt5.QtCore import Qt, QObject
+from PySide6.QtWidgets import QWidget, QLayoutItem, QSpacerItem
+from PySide6.QtCore import Qt, QObject
 from typing import Sequence, Iterable
 
 

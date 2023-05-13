@@ -1,15 +1,4 @@
 from typing import Any, Iterable
-from qasync import asyncSlot
-
-
-# def asyncwrap(to_call):
-#     @asyncSlot()
-#     async def wrapped():
-#         print(type(to_call))
-#         if to_call.__class__.__name__ in ('function', 'method'):
-#             await to_call()
-#         # elif
-#     return wrapped
 
 
 async def serializable(dictionary: dict[str, Any], exceptions: Iterable[str] = ()) -> dict[str, Any]:

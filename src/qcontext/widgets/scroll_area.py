@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QScrollArea, QWidget, QSizePolicy
-from PyQt5.QtCore import Qt, QObject
+from PySide6.QtWidgets import QScrollArea, QWidget, QSizePolicy
+from PySide6.QtCore import Qt, QObject
 from typing import Sequence, Iterable
 
 from .frame import Frame

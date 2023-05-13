@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QSlider, QWidget
+from PySide6.QtWidgets import QSlider, QWidget
 
 from .extensions import ContextObjectExt, OrientationExt
 

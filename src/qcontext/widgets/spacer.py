@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QSpacerItem, QSizePolicy
+from PySide6.QtWidgets import QSpacerItem, QSizePolicy
 
 
 class Spacer(QSpacerItem):

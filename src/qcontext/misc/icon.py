@@ -1,5 +1,5 @@
-from PyQt5.QtGui import QPixmap, QIcon, QImage
-from PyQt5.QtCore import QSize, QBuffer, QIODevice
+from PySide6.QtGui import QPixmap, QIcon, QImage
+from PySide6.QtCore import QSize, QBuffer, QIODevice
 # from loguru import logger
 import base64
 import site

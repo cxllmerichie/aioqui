@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget
 from loguru import logger as _logger
 from contextlib import suppress as _suppress
 import uuid
@@ -32,7 +32,7 @@ class ContextObjectExt:
         with _suppress(Exception):
             self.setVisible(visible)
 
-    def register(self, parent: QWidget, name: str, child: QWidget) -> None:
+    def register(self, parent: object, name: str, child: QWidget) -> None:
         """
         Check if object not in `blacklist`, then register, otherwise show warning
         Check if object already registered, push its name to `blacklist` unregister and show warning otherwise register

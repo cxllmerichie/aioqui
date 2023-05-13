@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget
 from datetime import datetime, time, date, timezone
-from PyQt5.QtCore import Qt
+from PySide6.QtCore import Qt
 from calendar import monthrange
 from dateutil import parser
 

@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QSettings as _QSettings
+from PySide6.QtCore import QSettings as _QSettings
 import socket as _socket
 from typing import Any
 

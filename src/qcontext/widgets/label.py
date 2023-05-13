@@ -1,6 +1,6 @@
-from PyQt5.QtGui import QFontMetrics, QPaintEvent
-from PyQt5.QtWidgets import QLabel, QWidget, QSizePolicy
-from PyQt5.QtCore import Qt, QSize
+from PySide6.QtGui import QFontMetrics, QPaintEvent
+from PySide6.QtWidgets import QLabel, QWidget, QSizePolicy
+from PySide6.QtCore import Qt, QSize
 
 from ..misc import Icon
 from .extensions import ContextObjectExt, AlignmentExt

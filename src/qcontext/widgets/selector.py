@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QComboBox, QWidget
+from PySide6.QtWidgets import QComboBox, QWidget
 from typing import Iterable, Any
 
 from ..misc import Icon

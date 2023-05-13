@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QSplitter, QSizePolicy
-from PyQt5.QtCore import Qt
+from PySide6.QtWidgets import QSplitter, QSizePolicy
+from PySide6.QtCore import Qt
 from loguru import logger as _logger
 
 

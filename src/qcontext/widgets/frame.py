@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QFrame, QWidget, QLayout, QSizePolicy
+from PySide6.QtWidgets import QFrame, QWidget, QLayout, QSizePolicy
 
 from .extensions import ContextObjectExt
 

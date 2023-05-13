@@ -1,5 +1,5 @@
-from PyQt5.QtCore import QPropertyAnimation, pyqtProperty
-from PyQt5.QtWidgets import QWidget
+from PySide6.QtCore import QPropertyAnimation, pyqtProperty
+from PySide6.QtWidgets import QWidget
 from time import sleep
 from qasync import asyncSlot
 

@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QVBoxLayout, QWidget, QHBoxLayout
-from PyQt5.QtCore import Qt
+from PySide6.QtWidgets import QVBoxLayout, QWidget, QHBoxLayout
+from PySide6.QtCore import Qt
 from typing import Union
 from abc import ABC
 

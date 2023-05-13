@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QCompleter, QStyledItemDelegate
-from PyQt5.QtCore import Qt
+from PySide6.QtWidgets import QWidget, QCompleter, QStyledItemDelegate
+from PySide6.QtCore import Qt
 from typing import Iterable
 
 from ..line_input import LineInput

@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QStatusBar, QWidget
+from PySide6.QtWidgets import QStatusBar, QWidget
 
 from .extensions import ContextObjectExt
 

@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QWidget, QFileDialog
-from PyQt5.QtCore import QSize
-from PyQt5.QtGui import QIcon
+from PySide6.QtWidgets import QWidget, QFileDialog
+from PySide6.QtCore import QSize
+from PySide6.QtGui import QIcon
 from contextlib import suppress
 from qasync import asyncSlot
 
