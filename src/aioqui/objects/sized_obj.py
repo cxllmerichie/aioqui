@@ -15,7 +15,7 @@ class SizedObj(SizePolicy):
 
             # margins: ? = ?,
             # padding: ? = ?,
-            alignment: Alignment.Alignment = Alignment.Left,
+            alignment: Alignment.Alignment = None,
 
             size: Size = None,
             width: int = None,
@@ -36,18 +36,15 @@ class SizedObj(SizePolicy):
         async def apply(self: QObject):
             nonlocal policy, vpolicy, hpolicy
             if policy:
-                self.setPolicy(*policy)
+                self.setSizePolicy(*policy)
                 if vpolicy or hpolicy:
                     SizedObj._warning(self)
-            elif vpolicy or hpolicy:
-                inner_policy = self.sizePolicy()
-                if not vpolicy:
-                    vpolicy = inner_policy.verticalPolicy()
-                if not hpolicy:
-                    hpolicy = inner_policy.verticalPolicy()
-                self.setSizePolicy(vpolicy, hpolicy)
+            elif vpolicy:
+                self.sizePolicy().setVerticalPolicy(vpolicy)
+            elif hpolicy:
+                self.sizePolicy().setHorizontalPolicy(hpolicy)
 
-            if hasattr(self, 'alignment'):
+            if alignment:
                 self.setAlignment(alignment)
 
             if size:
