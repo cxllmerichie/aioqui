@@ -39,10 +39,13 @@ class SizedObj(SizePolicy):
                 self.setSizePolicy(*policy)
                 if vpolicy or hpolicy:
                     SizedObj._warning(self)
-            elif vpolicy:
-                self.sizePolicy().setVerticalPolicy(vpolicy)
-            elif hpolicy:
-                self.sizePolicy().setHorizontalPolicy(hpolicy)
+            else:
+                policy_inner = self.sizePolicy()
+                if vpolicy:
+                    policy_inner.setVerticalPolicy(vpolicy)
+                elif hpolicy:
+                    policy_inner.setHorizontalPolicy(hpolicy)
+                self.setSizePolicy(policy_inner)
 
             if alignment:
                 self.setAlignment(alignment)

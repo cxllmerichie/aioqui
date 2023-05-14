@@ -7,8 +7,8 @@ from ..types import Applicable, Icon
 
 
 class Label(ContextObj, Alignment, ElideMode, QLabel):
-    __elide = ElideMode.ElideNone
-    __elide_text = ''
+    __elide_mode: ElideMode.ElideMode
+    __elide_text: str
 
     def __init__(self, parent: QWidget, name: str, visible: bool = True):
         QLabel.__init__(self, parent)
@@ -16,10 +16,10 @@ class Label(ContextObj, Alignment, ElideMode, QLabel):
 
     async def init(
             self, *,
-            text: str = '', wrap: bool = False, icon: Icon = None, elide: ElideMode.ElideMode = ElideMode.ElideNone,
+            text: str = '', wrap: bool = False, icon: Icon = None, elide: ElideMode.ElideMode = None,
             sizes: Applicable = SizedObj.Sizes(), events: Applicable = EventedObj.Events()
     ) -> 'Label':
-        self.__elide, self.__elide_text = elide, text
+        self.__elide_mode, self.__elide_text = elide, text
         self.setText(text)
         self.setWordWrap(wrap)
         if icon:
@@ -27,13 +27,16 @@ class Label(ContextObj, Alignment, ElideMode, QLabel):
         return await sizes(await events(self))
 
     def paintEvent(self, event: QPaintEvent):
-        if elide_mode := self.__elide:
+        if self.elided():
             elided_text = self.__elide_text
-            self.setText(QFontMetrics(self.font()).elidedText(elided_text, elide_mode, self.width() - 10))
+            self.setText(QFontMetrics(self.font()).elidedText(elided_text, self.__elide_mode, self.width() - 10))
             self.__elide_text = elided_text
         super().paintEvent(event)
 
+    def elided(self) -> bool:
+        return self.__elide_mode is not None
+
     def setText(self, text: str) -> None:
-        if self.__elide:
+        if self.elided():
             self.__elide_text = text
         super().setText(text)

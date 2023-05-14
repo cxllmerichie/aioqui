@@ -7,4 +7,3 @@ class ElideMode:
     ElideRight = Qt.TextElideMode.ElideRight
     ElideLeft = Qt.TextElideMode.ElideLeft
     ElideMiddle = Qt.TextElideMode.ElideMiddle
-    ElideNone = None

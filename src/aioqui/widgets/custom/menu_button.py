@@ -21,7 +21,7 @@ class MenuButton(Button):
                     icon=icon, disabled=True, sizes=Button.Sizes(fixed_size=Size(icon.size.width(), icon.size.height()))
                 ), Layout.Left,
                 text_lbl := await Label(self, f'{self.objectName()}TextLbl').init(
-                    text=text, elide=Label.ElideRight, sizes=Label.Sizes(hpolicy=Label.Expanding)
+                    text=text, sizes=Label.Sizes(hpolicy=Label.Expanding)
                 ),
                 total_lbl := await Label(self, f'{self.objectName()}TotalLbl').init(
                     text=str(total)
