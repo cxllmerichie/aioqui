@@ -1,16 +1,16 @@
+from PySide6.QtCore import QObject
 from loguru import logger
 
-from ..misc import Size
 from ..enums import SizePolicy, Alignment
-from ..types import Applicable
+from ..types import Applicable, Size
 
 
 class SizedObj(SizePolicy):
     @staticmethod
-    def applicable_sizes(
+    def Sizes(
             *,
-            vpolicy: SizePolicy = SizePolicy.Default,
-            hpolicy: SizePolicy = SizePolicy.Default,
+            vpolicy: SizePolicy = None,
+            hpolicy: SizePolicy = None,
 
             # margins: ? = ?,
             # padding: ? = ?,
@@ -32,9 +32,17 @@ class SizedObj(SizePolicy):
             fixed_width: int = None,
             fixed_height: int = None
     ) -> Applicable:
-        async def apply(self):
+        async def apply(self: QObject):
+            nonlocal vpolicy, hpolicy
+            policy = self.sizePolicy()
+            if not vpolicy:
+                vpolicy = policy.verticalPolicy()
+            if not hpolicy:
+                hpolicy = policy.verticalPolicy()
             self.setSizePolicy(vpolicy, hpolicy)
-            self.setAlignment(alignment)
+
+            if hasattr(self, 'alignment'):
+                self.setAlignment(alignment)
 
             if size:
                 self.resize(size.size)

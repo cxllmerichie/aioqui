@@ -1,5 +1,5 @@
 from src.aioqui.widgets import *
-from src.aioqui.qasyncio import AsyncApp
+from src.aioqui.qasyncio import AsyncApp, asyncSlot
 from src.aioqui import CONTEXT, qasyncio
 
 
@@ -29,8 +29,7 @@ class CentralWidget(Frame):
                         items=[
                             await Label(self, 'ElideLeftLbl').init(
                                 text='Elide left', elide=Label.ElideLeft,
-                                sizes=Label.applicable_sizes(
-                                    hpolicy=Label.Expanding, vpolicy=Label.Minimum,
+                                sizes=Label.Sizes(
                                     min_width=100
                                 )
                             ), Layout.Left,
@@ -41,11 +40,17 @@ class CentralWidget(Frame):
                     )
                 ),
                 await Button(self, 'TestBtn').init(
-                    eve
+                    events=Button.Events(
+                        on_click=self.test
+                    )
                 )
             ]
         ))
         return self
+
+    @asyncSlot()
+    async def test(self):
+        print('oh')
 
 
 class App(Window):

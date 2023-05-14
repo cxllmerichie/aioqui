@@ -3,8 +3,8 @@ from PySide6.QtGui import QIcon
 from typing import Callable
 
 from ..button import Button
-from ...misc import Icon
-from ...qasyncio import Slot
+from ...types import Icon
+from ...qasyncio import asyncSlot
 
 
 class FavouriteButton(Button):
@@ -30,7 +30,7 @@ class FavouriteButton(Button):
             self.if_unset_icon = if_unset_icon
         return self
 
-    @Slot()
+    @asyncSlot()
     async def slot(self, pre_slot: Callable[..., bool]):
         # toggle to change state
         self.set(not self.is_favourite)

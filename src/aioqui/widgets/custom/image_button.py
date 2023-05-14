@@ -1,12 +1,11 @@
 from PySide6.QtWidgets import QWidget, QFileDialog
-from PySide6.QtCore import QSize
 from PySide6.QtGui import QIcon
 from contextlib import suppress
 
 from ..button import Button
 from ..popup import Popup
-from ...misc import Icon
-from ...qasyncio import Slot
+from ...types import Icon, Size
+from ...qasyncio import asyncSlot
 
 
 class ImageButton(Button):
@@ -18,12 +17,13 @@ class ImageButton(Button):
             self, *,
             icon: Icon, slot: callable = lambda: None, directory: str = ''
     ) -> 'ImageButton':
-        await super().init(icon=icon, slot=lambda: self.choose_image(slot, directory))
+        await super().init(icon=icon)
+        self.clicked.connect(lambda: self.choose_image(slot, directory))
         self.RemoveImageBtn = await Button(self, f'{self.objectName()}RemoveImageBtn').init(
-            icon=Icon('x-circle.svg', (30, 30)), size=QSize(30, 30),
-            slot=lambda: Popup(self.core).display(
-                message=f'Remove icon?',
-                on_success=self.remove_icon
+            icon=Icon('x-circle.svg', (30, 30)),
+            sizes=Button.Sizes(fixed_size=Size(30, 30)),
+            events=Button.Events(
+                on_click=lambda: Popup(self.core).display(message=f'Remove icon?', on_success=self.remove_icon)
             )
         )
         self.RemoveImageBtn.move(self.width() - 30, 0)
@@ -59,7 +59,7 @@ class ImageButton(Button):
             self.RemoveImageBtn.setVisible(enabled)
         super().setEnabled(enabled)
 
-    @Slot()
+    @asyncSlot()
     async def choose_image(self, slot: callable = lambda: None, directory: str = ''):
         filepath, _ = QFileDialog.getOpenFileName(self, 'Choose image', directory, 'Images (*.jpg)')
         if filepath:

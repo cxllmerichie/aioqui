@@ -11,7 +11,7 @@ class EventedObj:
     EventType = type[callable]
 
     @staticmethod
-    def applicable_events(
+    def Events(
             *,
             on_click: EventType = None,
             on_change: EventType = None,

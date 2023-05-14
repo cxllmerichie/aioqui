@@ -3,9 +3,9 @@ from PySide6.QtWidgets import QWidget
 from time import sleep
 
 from ...misc import ConditionalThreadQueue
+from ...objects import EventedObj
 from ..label import Label
-from ..button import Button
-from ...qasyncio import Slot
+from ...qasyncio import asyncSlot
 
 
 class ErrorLabel(Label):
@@ -16,9 +16,6 @@ class ErrorLabel(Label):
         self.__duration: float = 0.5
 
     async def init(self, *args, **kwargs) -> 'ErrorLabel':
-        self.__emitter = await Button(self, 'EmitterBtn', False).init(
-            slot=self.reduce
-        )
         await super().init(*args, **kwargs)
         return self
 
@@ -34,12 +31,12 @@ class ErrorLabel(Label):
             sleep(delay)
 
         def post():
-            self.__emitter.click()
+            EventedObj.emit(self.reduce)
 
         self.__duration = duration
         self.__ctq.new(pre, post)
 
-    @Slot()
+    @asyncSlot()
     async def reduce(self):
         self.animation = QPropertyAnimation(self, b"_opacity")
         self.animation.setDuration(int(self.__duration * 1000))

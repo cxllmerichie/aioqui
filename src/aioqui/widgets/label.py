@@ -1,10 +1,9 @@
 from PySide6.QtGui import QFontMetrics, QPaintEvent
 from PySide6.QtWidgets import QLabel, QWidget
 
-from ..misc import Icon
 from ..objects import ContextObj, SizedObj, EventedObj
 from ..enums import Alignment, ElideMode
-from ..types import Applicable
+from ..types import Applicable, Icon
 
 
 class Label(ContextObj, Alignment, ElideMode, QLabel):
@@ -25,7 +24,7 @@ class Label(ContextObj, Alignment, ElideMode, QLabel):
     async def init(
             self, *,
             text: str = '', wrap: bool = False, icon: Icon = None, elide: ElideMode.ElideMode = ElideMode.ElideNone,
-            sizes: Applicable = SizedObj.applicable_sizes(), events: Applicable = EventedObj.applicable_events()
+            sizes: Applicable = SizedObj.Sizes(), events: Applicable = EventedObj.Events()
     ) -> 'Label':
         self.__elide, self.__elide_text = elide, text
         self.setText(text)

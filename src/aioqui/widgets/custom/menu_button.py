@@ -3,7 +3,7 @@ from PySide6.QtWidgets import QWidget, QSizePolicy
 from ..button import Button
 from ..label import Label
 from ..layout import Layout
-from ...misc import Icon
+from ...types import Icon
 
 
 class MenuButton(Button):

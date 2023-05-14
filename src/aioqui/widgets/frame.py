@@ -14,7 +14,7 @@ class Frame(ContextObj, QFrame):
     async def init(
             self, *,
             style: ... = None, layout: QLayout = None,
-            sizes: Applicable = SizedObj.applicable_sizes(), events: Applicable = EventedObj.applicable_events()
+            sizes: Applicable = SizedObj.Sizes(), events: Applicable = EventedObj.Events()
     ) -> 'Frame':
         if style:
             self.setFrameStyle(style)

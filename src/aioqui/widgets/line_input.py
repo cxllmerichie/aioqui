@@ -12,7 +12,7 @@ class LineInput(ContextObj, QLineEdit):
     async def init(
             self, *,
             placeholder: str = '', text: str = '', hidden: bool = False,
-            sizes: Applicable = SizedObj.applicable_sizes(), events: Applicable = EventedObj.applicable_events()
+            sizes: Applicable = SizedObj.Sizes(), events: Applicable = EventedObj.Events()
     ) -> 'LineInput':
         self.setText(text)
         self.setPlaceholderText(placeholder)

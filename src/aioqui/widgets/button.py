@@ -1,10 +1,8 @@
 from PySide6.QtWidgets import QPushButton, QWidget
 from PySide6.QtGui import QIcon
-from contextlib import suppress
 
-from ..misc import Icon
 from ..objects import ContextObj, SizedObj, EventedObj
-from ..types import Applicable
+from ..types import Applicable, Icon
 
 
 class Button(ContextObj, QPushButton):
@@ -15,7 +13,7 @@ class Button(ContextObj, QPushButton):
     async def init(
             self, *,
             text: str = '', icon: Icon = None, disabled: bool = False,
-            sizes: Applicable = SizedObj.applicable_sizes(), events: Applicable = EventedObj.applicable_events()
+            sizes: Applicable = SizedObj.Sizes(), events: Applicable = EventedObj.Events()
     ) -> 'Button':
         self.setText(text)
         self.setDisabled(disabled)

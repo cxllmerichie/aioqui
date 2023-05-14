@@ -4,7 +4,7 @@ from PySide6.QtCore import QSize
 from ..frame import Frame
 from ..label import Label
 from ..layout import Layout
-from ...misc import Icon
+from ...types import Icon
 
 
 # ToDo: fix setVisible and objectName for outer and inner object (maybe using inheritance from Label setting Layout)

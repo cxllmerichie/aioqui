@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
     commands = [
         dict(orig='python -m build ../ --outdir ../dist', alt='Building...'),
-        dict(orig=f'python -m twine upload ../dist/qcontext-{VERSION}* -u{PYPI_USERNAME} -p{PYPI_PASSWORD}', alt='Uploading...')
+        dict(orig=f'python -m twine upload ../dist/aioqui-{VERSION}* -u{PYPI_USERNAME} -p{PYPI_PASSWORD}', alt='Uploading...')
     ]
     for command in commands:
         logging.info(command['alt'])
