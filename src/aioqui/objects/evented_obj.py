@@ -1,57 +1,64 @@
 from PySide6.QtCore import QObject
+from loguru import logger
 from contextlib import suppress
 from PySide6.QtWidgets import (
     QPushButton, QFrame, QLabel, QLineEdit, QTextEdit, QStackedWidget, QComboBox
 )
 
-from ..types import Applicable
+from ..types import Applicable, Event
+from ..qasyncio import asyncSlot
 
 
 class EventedObj:
-    EventType = type[callable]
-
     @staticmethod
     def Events(
             *,
-            on_click: EventType = None,
-            on_change: EventType = None,
-            # on_resize: EventType = None  # ?
+            on_click: Event = None,
+            on_change: Event = None,
+            on_resize: Event = None,
+            on_close: Event = None
     ) -> Applicable:
-        async def apply(self):
+        async def apply(obj):
             if on_click:
-                if isinstance(self, QPushButton):
-                    with suppress(Exception):
-                        self.clicked.disconnect()
-                    self.clicked.connect(on_click)
-                elif isinstance(self, (QLabel, QFrame)):
-                    self.mousePressEvent = lambda event: EventedObj.emit(on_click)
+                if isinstance(obj, QPushButton):
+                    await EventedObj.connect(obj, 'clicked', on_click)
+                elif isinstance(obj, (QLabel, QFrame)):
+                    obj.mousePressEvent = lambda event: EventedObj.emit(on_click)
                 else:
-                    EventedObj.error(self, 'on_click')
+                    EventedObj._error(obj, 'on_click')
 
             if on_change:
                 if isinstance(QLineEdit, QTextEdit):
-                    with suppress(Exception):
-                        self.textChanged.disconnect()
-                    self.textChanged.connect(on_change)
-                elif isinstance(self, QStackedWidget):
-                    with suppress(Exception):
-                        self.currentChanged.disconnect()
-                    self.currentChanged.connect(on_change)
-                elif isinstance(self, QComboBox):
-                    self.currentTextChanged.connect(on_change)
+                    await EventedObj.connect(obj, 'textChanged', on_change)
+                elif isinstance(obj, QStackedWidget):
+                    await EventedObj.connect(obj, 'currentChanged', on_change)
+                elif isinstance(obj, QComboBox):
+                    await EventedObj.connect(obj, 'currentTextChanged', on_change)
                 else:
-                    EventedObj.error(self, 'on_change')
+                    EventedObj._error(obj, 'on_change')
 
-            return self
+            if on_close:
+                async def close(self) -> bool:
+                    await self.on_close()
+                    return super.close(obj)
+                obj.close = close
+            return obj
         return apply
 
     @staticmethod
-    async def emit(event: EventType):
+    async def connect(obj: QObject, signalname: str, event: Event):
+        signal = getattr(obj, signalname)
+        with suppress(Exception):
+            signal.disconnect()
+        signal.connect(event)
+
+    @staticmethod
+    async def emit(event: Event) -> None:
         btn = QPushButton()
         btn.setVisible(False)
         btn.clicked.connect(event)
         btn.click()
 
     @staticmethod
-    def error(handler: QObject, event: str) -> str:
-        raise NotImplementedError(f'{handler.objectName()} is undefined handler for `{event}` event')
+    def _error(obj: QObject, event: str) -> None:
+        logger.error(f'event `{event}` is not implemented for `{obj.objectName()}\'s` type')

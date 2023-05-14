@@ -4,11 +4,12 @@ from typing import Sequence, Iterable
 
 from .frame import Frame
 from .layout import Layout
-from ..objects import ContextObj
+from ..objects import ContextObj, SizedObj, EventedObj
 from ..enums import Orientation, ScrollPolicy
+from ..types import Applicable
 
 
-class ScrollArea(ContextObj, QScrollArea):
+class ScrollArea(ContextObj, ScrollPolicy, Orientation, QScrollArea):
     def __init__(self, parent: QWidget, name: str, visible: bool = True, stylesheet: str = None):
         QScrollArea.__init__(self, parent)
         ContextObj.__init__(self, parent, name, visible)
@@ -22,7 +23,8 @@ class ScrollArea(ContextObj, QScrollArea):
             vpolicy: ScrollPolicy.ScrollPolicy = ScrollPolicy.WhenNeeded,
 
             margins: tuple[int, ...] = (0, 0, 0, 0), spacing: int = 0, alignment: Layout.Alignment = None,
-            items: Sequence[QObject] = ()
+            items: Sequence[QObject] = (),
+            sizes: Applicable = SizedObj.Sizes(), events: Applicable = EventedObj.Events()
     ) -> 'ScrollArea':
         self.setHorizontalScrollBarPolicy(hpolicy)
         self.setVerticalScrollBarPolicy(vpolicy)
@@ -33,7 +35,7 @@ class ScrollArea(ContextObj, QScrollArea):
                 margins=margins, spacing=spacing, alignment=alignment, items=items
             )
         ))
-        return self
+        return await sizes(await events(self))
 
     def clear(self, exceptions: Iterable[QObject] = ()):
         self.widget().layout().clear(exceptions)

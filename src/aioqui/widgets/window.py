@@ -1,6 +1,8 @@
 from PySide6.QtWidgets import QMainWindow
 
+from ..objects import SizedObj, EventedObj
 from ..enums import WindowHint
+from ..types import Applicable
 
 
 class Window(WindowHint, QMainWindow):
@@ -10,5 +12,8 @@ class Window(WindowHint, QMainWindow):
         if stylesheet:
             self.setStyleSheet(stylesheet)
 
-    async def init(self) -> 'Window':
-        return self
+    async def init(
+            self, *,
+            sizes: Applicable = SizedObj.Sizes(), events: Applicable = EventedObj.Events()
+    ) -> 'Window':
+        return await sizes(await events(self))

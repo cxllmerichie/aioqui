@@ -9,6 +9,7 @@ class SizedObj(SizePolicy):
     @staticmethod
     def Sizes(
             *,
+            policy: tuple[SizePolicy, Size] = None,
             vpolicy: SizePolicy = None,
             hpolicy: SizePolicy = None,
 
@@ -33,13 +34,18 @@ class SizedObj(SizePolicy):
             fixed_height: int = None
     ) -> Applicable:
         async def apply(self: QObject):
-            nonlocal vpolicy, hpolicy
-            policy = self.sizePolicy()
-            if not vpolicy:
-                vpolicy = policy.verticalPolicy()
-            if not hpolicy:
-                hpolicy = policy.verticalPolicy()
-            self.setSizePolicy(vpolicy, hpolicy)
+            nonlocal policy, vpolicy, hpolicy
+            if policy:
+                self.setPolicy(policy)
+                if vpolicy or hpolicy:
+                    SizedObj._warning(self)
+            else:
+                inner_policy = self.sizePolicy()
+                if not vpolicy:
+                    vpolicy = inner_policy.verticalPolicy()
+                if not hpolicy:
+                    hpolicy = inner_policy.verticalPolicy()
+                self.setSizePolicy(vpolicy, hpolicy)
 
             if hasattr(self, 'alignment'):
                 self.setAlignment(alignment)
@@ -47,7 +53,7 @@ class SizedObj(SizePolicy):
             if size:
                 self.resize(size.size)
                 if width or height:
-                    logger.warning(self.__warning)
+                    SizedObj._warning(self)
             elif width:
                 self.resize(width, self.height())
             elif height:
@@ -56,7 +62,7 @@ class SizedObj(SizePolicy):
             if min_size:
                 self.setMinimumSize(min_size.size)
                 if min_width or min_height:
-                    logger.warning(self.__warning)
+                    SizedObj._warning(self)
             elif min_width:
                 self.setMinimumWidth(min_width)
             elif min_height:
@@ -65,7 +71,7 @@ class SizedObj(SizePolicy):
             if max_size:
                 self.setMaximumSize(max_size.size)
                 if max_width or max_height:
-                    logger.warning(self.__warning)
+                    SizedObj._warning(self)
             elif max_width:
                 self.setMaximumWidth(max_width)
             elif max_height:
@@ -74,7 +80,7 @@ class SizedObj(SizePolicy):
             if fixed_size:
                 self.setFixedSize(fixed_size.size)
                 if fixed_width or fixed_height:
-                    logger.warning(self.__warning)
+                    SizedObj._warning(self)
             elif fixed_width:
                 self.setFixedWidth(fixed_width)
             elif fixed_height:
@@ -82,7 +88,7 @@ class SizedObj(SizePolicy):
             return self
         return apply
 
-    @property
-    def __warning(self) -> str:
-        return f'Review `{self.objectName()}.sized()` arguments'
+    @staticmethod
+    def _warning(handler: QObject) -> None:
+        logger.warning(f'Review `{handler.objectName()}.sized()` arguments')
 

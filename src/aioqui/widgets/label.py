@@ -14,13 +14,6 @@ class Label(ContextObj, Alignment, ElideMode, QLabel):
         QLabel.__init__(self, parent)
         ContextObj.__init__(self, parent, name, visible)
 
-    def paintEvent(self, event: QPaintEvent):
-        if elide_mode := self.__elide:
-            elided_text = self.__elide_text
-            self.setText(QFontMetrics(self.font()).elidedText(elided_text, elide_mode, self.width() - 10))
-            self.__elide_text = elided_text
-        super().paintEvent(event)
-
     async def init(
             self, *,
             text: str = '', wrap: bool = False, icon: Icon = None, elide: ElideMode.ElideMode = ElideMode.ElideNone,
@@ -32,6 +25,13 @@ class Label(ContextObj, Alignment, ElideMode, QLabel):
         if icon:
             self.setPixmap(icon.icon.pixmap(icon.size))
         return await sizes(await events(self))
+
+    def paintEvent(self, event: QPaintEvent):
+        if elide_mode := self.__elide:
+            elided_text = self.__elide_text
+            self.setText(QFontMetrics(self.font()).elidedText(elided_text, elide_mode, self.width() - 10))
+            self.__elide_text = elided_text
+        super().paintEvent(event)
 
     def setText(self, text: str) -> None:
         if self.__elide:
