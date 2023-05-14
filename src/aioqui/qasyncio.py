@@ -6,16 +6,6 @@ import sys
 from qasync import asyncSlot  # to import `asyncSlot` from `qasyncio`
 
 
-# def callableAsyncSlot(to_call):
-#     @asyncSlot()
-#     async def wrapped():
-#         print(type(to_call))
-#         if to_call.__class__.__name__ in ('function', 'method'):
-#             await to_call()
-#         # elif
-#     return wrapped
-
-
 class AsyncApp:
     @staticmethod
     def run(amain: Callable[[], Awaitable[None]]) -> None:
@@ -33,3 +23,13 @@ class AsyncApp:
             qasync.run(wrap())
         except asyncio.exceptions.CancelledError:
             sys.exit(0)
+
+
+def to_async_slot(to_call):
+    @asyncSlot()
+    async def wrapped():
+        print(type(to_call))
+        if to_call.__class__.__name__ in ('function', 'method'):
+            await to_call()
+        # elif
+    return wrapped

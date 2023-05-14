@@ -1,12 +1,12 @@
 from PySide6.QtWidgets import QTextEdit, QWidget, QSizePolicy
 
-from .extensions import ContextObjectExt
+from ..objects import ContextObj
 
 
-class TextInput(ContextObjectExt, QTextEdit):
+class TextInput(ContextObj, QTextEdit):
     def __init__(self, parent: QWidget, name: str, visible: bool = True):
         QTextEdit.__init__(self, parent)
-        ContextObjectExt.__init__(self, parent, name, visible)
+        ContextObj.__init__(self, parent, name, visible)
 
     async def init(
             self, *,

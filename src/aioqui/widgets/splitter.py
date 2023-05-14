@@ -3,7 +3,8 @@ from PySide6.QtCore import Qt
 from typing import Iterable
 
 from .widget import Widget
-from .extensions import ContextObjectExt, SplitterWidgetExt
+from .extensions import SplitterWidgetExt
+from ..objects import ContextObj
 from ..enums import Orientation
 
 
@@ -20,12 +21,12 @@ class SplitterWidget(SplitterWidgetExt, Widget):
         SplitterWidgetExt.__init__(self, expand_to, expand_min, expand_max, orientation)
 
 
-class Splitter(ContextObjectExt, QSplitter):
+class Splitter(ContextObj, QSplitter):
     def __init__(self, parent: QWidget, name: str, visible: bool = True, stylesheet: str = None,
                  orientation: Orientation.Orientation = Orientation.Horizontal,
                  policy: tuple[QSizePolicy, QSizePolicy] = (QSizePolicy.Expanding, QSizePolicy.Expanding)):
         QSplitter.__init__(self, orientation, parent)
-        ContextObjectExt.__init__(self, parent, name, visible)
+        ContextObj.__init__(self, parent, name, visible)
         if stylesheet:
             self.setStyleSheet(stylesheet)
             self.setAttribute(Qt.WA_StyledBackground, True)

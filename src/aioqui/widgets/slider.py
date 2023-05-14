@@ -1,13 +1,13 @@
 from PySide6.QtWidgets import QSlider, QWidget
 
-from .extensions import ContextObjectExt
+from ..objects import ContextObj
 from ..enums import Orientation
 
 
-class Slider(ContextObjectExt, Orientation, QSlider):
+class Slider(ContextObj, Orientation, QSlider):
     def __init__(self, parent: QWidget, name: str, visible: bool = True):
         QSlider.__init__(self, parent)
-        ContextObjectExt.__init__(self, parent, name, visible)
+        ContextObj.__init__(self, parent, name, visible)
     #
     # async def init(
     #         self, *,

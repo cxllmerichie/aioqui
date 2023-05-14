@@ -1,48 +1,40 @@
 from PySide6.QtGui import QFontMetrics, QPaintEvent
-from PySide6.QtWidgets import QLabel, QWidget, QSizePolicy
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtWidgets import QLabel, QWidget
 
 from ..misc import Icon
-from .extensions import ContextObjectExt
-from src.aioqui.enums import Alignment
+from ..objects import ContextObj, SizedObj, EventedObj
+from ..enums import Alignment, ElideMode
+from ..types import Applicable
 
 
-class Label(ContextObjectExt, Alignment, QLabel):
-    __elided = False
-    __non_elided_text = ''
+class Label(ContextObj, Alignment, ElideMode, QLabel):
+    __elide = ElideMode.ElideNone
+    __elide_text = ''
 
     def __init__(self, parent: QWidget, name: str, visible: bool = True):
         QLabel.__init__(self, parent)
-        ContextObjectExt.__init__(self, parent, name, visible)
+        ContextObj.__init__(self, parent, name, visible)
 
     def paintEvent(self, event: QPaintEvent):
-        if self.__elided:
-            non_elided_text = self.__non_elided_text
-            self.setText(QFontMetrics(self.font()).elidedText(non_elided_text, Qt.ElideRight, self.width() - 10))
-            self.__non_elided_text = non_elided_text
+        if elide_mode := self.__elide:
+            elided_text = self.__elide_text
+            self.setText(QFontMetrics(self.font()).elidedText(elided_text, elide_mode, self.width() - 10))
+            self.__elide_text = elided_text
         super().paintEvent(event)
 
     async def init(
             self, *,
-            text: str = '', alignment: Qt.Alignment = None, wrap: bool = False, size: QSize = None,
-            icon: Icon = None, elided: bool = False, policy: tuple[QSizePolicy, QSizePolicy] = None
+            text: str = '', wrap: bool = False, icon: Icon = None, elide: ElideMode.ElideMode = ElideMode.ElideNone,
+            sizes: Applicable = SizedObj.applicable_sizes(), events: Applicable = EventedObj.applicable_events()
     ) -> 'Label':
-        self.__elided = elided
-        if self.__elided:
-            self.__non_elided_text = text
+        self.__elide, self.__elide_text = elide, text
         self.setText(text)
         self.setWordWrap(wrap)
-        if size:
-            self.setFixedSize(size)
-        if alignment:
-            self.setAlignment(alignment)
         if icon:
             self.setPixmap(icon.icon.pixmap(icon.size))
-        if policy:
-            self.setSizePolicy(*policy)
-        return self
+        return await sizes(await events(self))
 
     def setText(self, text: str) -> None:
-        if self.__elided:
-            self.__non_elided_text = text
+        if self.__elide:
+            self.__elide_text = text
         super().setText(text)

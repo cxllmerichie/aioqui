@@ -1,20 +1,18 @@
 from PySide6.QtWidgets import QWidget, QStackedWidget
 from PySide6.QtCore import Qt
 
-from .extensions import ContextObjectExt
+from ..objects import ContextObj
 
 
-class StackedWidget(ContextObjectExt, QStackedWidget):
+class StackedWidget(ContextObj, QStackedWidget):
     def __init__(self, parent: QWidget, name: str, visible: bool = True, stylesheet: str = None):
         QStackedWidget.__init__(self, parent)
-        ContextObjectExt.__init__(self, parent, name, visible)
+        ContextObj.__init__(self, parent, name, visible)
         if stylesheet:
             self.setStyleSheet(stylesheet)
             self.setAttribute(Qt.WA_StyledBackground, True)
 
-        # костыль мирового масштаба, причина появления проблемы неизвестна,
-        # без этой хуйни первый виджет в стаке имеет проблемы с родителем (сирота ебаная),
-        # костыль включает в себя перезапись метода `setCurrentIndex`
+        # workaround which includes override of `setCurrentIndex`, otherwise problems with `parent()`
         self.addWidget(QWidget(self))
 
     def setCurrentIndex(self, index: int) -> None:

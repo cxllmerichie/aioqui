@@ -1,4 +1,4 @@
-from . import misc, widgets
+from . import misc, widgets, enums
 from .contextapi import CONTEXT
 
 # noinspection PyUnresolvedReferences

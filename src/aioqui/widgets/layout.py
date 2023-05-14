@@ -3,11 +3,12 @@ from PySide6.QtCore import Qt
 from typing import Union
 from abc import ABC
 
-from .extensions import ContextObjectExt, LayoutExt
-from src.aioqui.enums import Alignment, Policy, Orientation
+from .extensions import LayoutExt
+from ..objects import ContextObj
+from ..enums import Alignment, SizePolicy, Orientation
 
 
-class Layout(ABC, Alignment, Policy, Orientation):
+class Layout(ABC, Alignment, SizePolicy, Orientation):
     @classmethod
     def horizontal(cls, parent: QWidget = None, name: str = None) -> 'HLayout':
         return HLayout(parent, name)
@@ -21,13 +22,13 @@ class Layout(ABC, Alignment, Policy, Orientation):
         return Layout.vertical(parent, name) if orientation is Layout.Vertical else Layout.horizontal(parent, name)
 
 
-class VLayout(ContextObjectExt, LayoutExt, QVBoxLayout):
+class VLayout(ContextObj, LayoutExt, QVBoxLayout):
     def __init__(self, parent: QWidget = None, name: str = None):
         QVBoxLayout.__init__(self, parent)
-        ContextObjectExt.__init__(self, parent, name, True)
+        ContextObj.__init__(self, parent, name, True)
 
 
-class HLayout(ContextObjectExt, LayoutExt, QHBoxLayout):
+class HLayout(ContextObj, LayoutExt, QHBoxLayout):
     def __init__(self, parent: QWidget = None, name: str = None):
         QHBoxLayout.__init__(self, parent)
-        ContextObjectExt.__init__(self, parent, name, True)
+        ContextObj.__init__(self, parent, name, True)

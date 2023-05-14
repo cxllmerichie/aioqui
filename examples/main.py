@@ -1,48 +1,51 @@
-from PySide6.QtWidgets import QWidget
-
 from src.aioqui.widgets import *
 from src.aioqui.qasyncio import AsyncApp
 from src.aioqui import CONTEXT, qasyncio
 
 
-async def async_func():
-    print('Async func called')
+css = f'''
+#CentralWidget {{
+    background-color: yellow;
+}}
+
+#ElideLeftLbl,
+#ElideRightLbl {{
+    background-color: blue;
+}} 
+'''
 
 
 class CentralWidget(Frame):
-    def __init__(self, parent: QWidget):
-        super().__init__(parent, self.__class__.__name__)
+    def __init__(self, parent: Parent):
+        super().__init__(parent, self.__class__.__name__, stylesheet=css)
 
     async def init(self) -> 'CentralWidget':
         self.setLayout(await Layout.vertical().init(
             spacing=5, alignment=Layout.Center, margins=(5, 5, 5, 5),
             items=[
-                await Label(self, 'TextLbl').init(
-                    text='Some' + ' long' * 10 + 'text', wrap=True, alignment=Label.TopCenter
+                await Frame(self, 'ElidedLabelsFrame').init(
+                    layout=await Layout.vertical().init(
+                        spacing=50,
+                        items=[
+                            await Label(self, 'ElideLeftLbl').init(
+                                text='Elide left', elide=Label.ElideLeft,
+                                sizes=Label.applicable_sizes(
+                                    hpolicy=Label.Expanding, vpolicy=Label.Minimum,
+                                    min_width=100
+                                )
+                            ), Layout.Left,
+                            await Label(self, 'ElideRightLbl').init(
+                                text='Elide right', elide=Label.ElideRight
+                            ), Layout.Right
+                        ]
+                    )
                 ),
-                await Layout.horizontal().init(
-                    items=[
-                        await Button(self, 'TestBtn1').init(
-                            slot=self.test_context_global, text='Test `CONTEXT`'
-                        ),
-                        await Button(self, 'TestBtn2').init(
-                            slot=self.test_context_self, text='Test `CONTEXT`'
-                        )
-                    ]
+                await Button(self, 'TestBtn').init(
+                    eve
                 )
             ]
         ))
         return self
-
-    @qasyncio.asyncSlot()
-    async def test_context_global(self):
-        CONTEXT.TextLbl.setText('Text was set using `CONTEXT`')
-        await async_func()
-
-    @qasyncio.asyncSlot()
-    async def test_context_self(self):
-        self.TextLbl.setText('Text was set using `self`')
-        await async_func()
 
 
 class App(Window):

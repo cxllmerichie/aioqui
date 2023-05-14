@@ -1,7 +1,7 @@
-from PySide6.QtWidgets import QSplitter, QSizePolicy
+from PySide6.QtWidgets import QSplitter
 from loguru import logger as _logger
 
-from src.qcontext.widgets.enums.orientation import Orientation
+from ...enums import Orientation, SizePolicy
 
 
 class SplitterWidgetExt(Orientation):
@@ -9,7 +9,7 @@ class SplitterWidgetExt(Orientation):
 
     def __init__(self, expand_to: int,
                  expand_min: int = None, expand_max: int = None, orientation: Orientation.Orientation = None,
-                 policy: tuple[QSizePolicy, QSizePolicy] = (QSizePolicy.Expanding, QSizePolicy.Expanding)):
+                 policy: tuple[SizePolicy.Policy, SizePolicy.Policy] = (SizePolicy.Expanding, SizePolicy.Expanding)):
         self.expand_to: int = expand_to
         self.setSizePolicy(*policy)
 

@@ -4,20 +4,21 @@ from contextlib import suppress as _suppress
 from typing import Iterable
 import uuid
 
-from ...contextapi import CONTEXT
+from ..contextapi import CONTEXT
+from .sized_obj import SizedObj
+from .evented_obj import EventedObj
 
 
-# ToDo: for all objects add to init(min_size, min_width, max_width, min_height, max_height, policy, margins?, alignment?)
-class ContextObjectExt:
+class ContextObj(SizedObj, EventedObj):
     __blacklist: dict[str, list[str]] = {}
 
     def __init__(self, parent: QWidget = None, name: str = str(uuid.uuid4()), visible: bool = True,
                  stylesheet: str | Iterable[str] = None):
         if parent and name:
             self.setObjectName(name)
-            self.register(parent, name, self)
-            self.register(self, parent.objectName(), parent)
-            self.register(CONTEXT, name, self)
+            self.__register(parent, name, self)
+            self.__register(self, parent.objectName(), parent)
+            self.__register(CONTEXT, name, self)
 
             self.core = parent
             while p := self.core.parent():
@@ -39,7 +40,7 @@ class ContextObjectExt:
                     stylesheet = ''.join(stylesheet)
                 self.setStyleSheet(stylesheet)
 
-    def register(self, parent: object, name: str, child: QWidget) -> None:
+    def __register(self, parent: object, name: str, child: QWidget) -> None:
         """
         Check if object not in `blacklist`, then register, otherwise show warning
         Check if object already registered, push its name to `blacklist` unregister and show warning otherwise register

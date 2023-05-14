@@ -2,10 +2,11 @@ from PySide6.QtWidgets import QComboBox, QWidget
 from typing import Iterable, Any
 
 from ..misc import Icon
-from .extensions import ContextObjectExt
+from ..objects import ContextObj, SizedObj, EventedObj
+from ..types import Applicable
 
 
-class Selector(ContextObjectExt, QComboBox):
+class Selector(ContextObj, QComboBox):
     class Item:
         def __init__(self, text: str, icon: Icon = None, data: Any = None):
             self.params = []
@@ -17,22 +18,19 @@ class Selector(ContextObjectExt, QComboBox):
 
     def __init__(self, parent: QWidget, name: str, visible: bool = True):
         QComboBox.__init__(self)
-        ContextObjectExt.__init__(self, parent, name, visible)
+        ContextObj.__init__(self, parent, name, visible)
 
     async def init(
             self, *,
-            items: Iterable[Item | str] = (), indexchanged: callable = None, textchanged: callable = None
+            items: Iterable[Item | str] = (),
+            sizes: Applicable = SizedObj.applicable_sizes(), events: Applicable = EventedObj.applicable_events()
     ) -> 'Selector':
         for item in items:
             if isinstance(item, Selector.Item):
                 self.addItem(*item.params)
             elif isinstance(item, str):
                 self.addItem(item)
-        if indexchanged:
-            self.currentIndexChanged.connect(indexchanged)
-        if textchanged:
-            self.currentTextChanged.connect(textchanged)
-        return self
+        return await sizes(await events(self))
 
     def setCurrentText(self, text: Any) -> None:
         super().setCurrentText(str(text))

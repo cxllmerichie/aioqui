@@ -7,7 +7,7 @@ from uvicorn import Config  # to import while using `Server`
 
 
 class Server(uvicorn.Server):
-    def install_signal_handlers(self):
+    def install_signal_handlers(self):  # overriding to disable
         pass
 
     @contextlib.contextmanager

@@ -1,35 +1,25 @@
-from PySide6.QtWidgets import QPushButton, QWidget, QSizePolicy
-from PySide6.QtCore import QSize
+from PySide6.QtWidgets import QPushButton, QWidget
 from PySide6.QtGui import QIcon
 from contextlib import suppress
 
 from ..misc import Icon
-from .extensions import ContextObjectExt
+from ..objects import ContextObj, SizedObj, EventedObj
+from ..types import Applicable
 
 
-class Button(ContextObjectExt, QPushButton):
+class Button(ContextObj, QPushButton):
     def __init__(self, parent: QWidget, name: str, visible: bool = True):
         QPushButton.__init__(self, parent)
-        ContextObjectExt.__init__(self, parent, name, visible)
+        ContextObj.__init__(self, parent, name, visible)
 
     async def init(
             self, *,
-            text: str = '', size: QSize = None, icon: Icon = None, disabled: bool = False,
-            slot: callable = None, policy: tuple[QSizePolicy, QSizePolicy] = None
+            text: str = '', icon: Icon = None, disabled: bool = False,
+            sizes: Applicable = SizedObj.applicable_sizes(), events: Applicable = EventedObj.applicable_events()
     ) -> 'Button':
         self.setText(text)
         self.setDisabled(disabled)
-
-        with suppress(Exception):
-            self.clicked.disconnect()
-        if slot:
-            self.clicked.connect(slot)
-
-        if size:
-            self.setFixedSize(size)
         if icon:
             self.setIcon(QIcon(icon.icon))
             self.setIconSize(icon.size)
-        if policy:
-            self.setSizePolicy(*policy)
-        return self
+        return await sizes(await events(self))
