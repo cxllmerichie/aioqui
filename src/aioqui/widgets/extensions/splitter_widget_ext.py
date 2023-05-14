@@ -9,7 +9,7 @@ class SplitterWidgetExt(Orientation):
 
     def __init__(self, expand_to: int,
                  expand_min: int = None, expand_max: int = None, orientation: Orientation.Orientation = None,
-                 policy: tuple[SizePolicy.Policy, SizePolicy.Policy] = (SizePolicy.Expanding, SizePolicy.Expanding)):
+                 policy: tuple[SizePolicy.SizePolicy, SizePolicy.SizePolicy] = (SizePolicy.Expanding, SizePolicy.Expanding)):
         self.expand_to: int = expand_to
         self.setSizePolicy(*policy)
 

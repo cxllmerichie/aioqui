@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QSizePolicy
 
 
 class SizePolicy:
-    Policy = QSizePolicy
+    SizePolicy = QSizePolicy
 
     Default = QSizePolicy.Policy.Ignored
     Expanding = QSizePolicy.Policy.Expanding
