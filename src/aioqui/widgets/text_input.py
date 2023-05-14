@@ -1,6 +1,7 @@
-from PySide6.QtWidgets import QTextEdit, QWidget, QSizePolicy
+from PySide6.QtWidgets import QTextEdit, QWidget
 
-from ..objects import ContextObj
+from ..objects import ContextObj, SizedObj, EventedObj
+from ..types import Applicable
 
 
 class TextInput(ContextObj, QTextEdit):
@@ -10,13 +11,9 @@ class TextInput(ContextObj, QTextEdit):
 
     async def init(
             self, *,
-            placeholder: str = '', text: str = '', textchanged: callable = None,
-            policy: tuple[QSizePolicy, QSizePolicy] = None
+            placeholder: str = '', text: str = '',
+            sizes: Applicable = SizedObj.Sizes(), events: Applicable = EventedObj.Events()
     ) -> 'TextInput':
         self.setText(text)
         self.setPlaceholderText(placeholder)
-        if textchanged:
-            self.textChanged.connect(textchanged)
-        if policy:
-            self.setSizePolicy(*policy)
-        return self
+        return await sizes(await events(self))

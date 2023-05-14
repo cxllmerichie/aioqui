@@ -80,19 +80,19 @@ class Popup(Widget):
         btns = []
         if Popup.YES in buttons:
             btns.append(await Button(self, f'{self.objectName()}YesBtn').init(
-                text='Yes', slot=lambda: self.slot(on_success)
+                text='Yes', events=Button.Events(on_click=lambda: self.slot(on_success))
             ))
         if Popup.NO in buttons:
             btns.append(await Button(self, f'{self.objectName()}NoBtn').init(
-                text='No', slot=lambda: self.slot(on_failure)
+                text='No', events=Button.Events(on_click=lambda: self.slot(on_failure))
             ))
         if Popup.OK in buttons:
             btns.append(await Button(self, f'{self.objectName()}OkBtn').init(
-                text='Ok', slot=lambda: self.slot(on_success)
+                text='Ok', events=Button.Events(on_click=lambda: self.slot(on_success))
             ))
         if Popup.CANCEL in buttons:
             btns.append(await Button(self, f'{self.objectName()}CancelBtn').init(
-                text='Cancel', slot=lambda: self.slot(on_failure)
+                text='Cancel', events=Button.Events(on_click=lambda: self.slot(on_failure))
             ))
 
         self.setLayout(await Layout.vertical().init(
@@ -103,7 +103,7 @@ class Popup(Widget):
                         spacing=20, margins=(20, 20, 20, 20),
                         items=[
                             await Label(self, f'{self.objectName()}MessageLbl').init(
-                                text=message, wrap=True, alignment=Layout.Center
+                                text=message, wrap=True, sizes=Label.Sizes(alignment=Layout.Center)
                             ),
                             await Layout.horizontal().init(
                                 spacing=20, items=btns

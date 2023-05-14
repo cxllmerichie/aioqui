@@ -1,4 +1,5 @@
 from PySide6.QtCore import QObject
+from PySide6.QtGui import QResizeEvent
 from loguru import logger
 from contextlib import suppress
 from PySide6.QtWidgets import (
@@ -6,7 +7,6 @@ from PySide6.QtWidgets import (
 )
 
 from ..types import Applicable, Event
-from ..qasyncio import asyncSlot
 
 
 class EventedObj:
@@ -28,7 +28,7 @@ class EventedObj:
                     EventedObj._error(obj, 'on_click')
 
             if on_change:
-                if isinstance(QLineEdit, QTextEdit):
+                if isinstance(obj, (QLineEdit, QTextEdit)):
                     await EventedObj.connect(obj, 'textChanged', on_change)
                 elif isinstance(obj, QStackedWidget):
                     await EventedObj.connect(obj, 'currentChanged', on_change)
@@ -39,9 +39,16 @@ class EventedObj:
 
             if on_close:
                 async def close(self) -> bool:
-                    await self.on_close()
-                    return super.close(obj)
+                    await on_close()
+                    return self.close()
                 obj.close = close
+
+            if on_resize:
+                async def resizeEvent(self, event: QResizeEvent) -> None:
+                    self.resizeEvent(self, event)
+                    await on_resize()
+                obj.resizeEvent = resizeEvent
+
             return obj
         return apply
 
@@ -61,4 +68,4 @@ class EventedObj:
 
     @staticmethod
     def _error(obj: QObject, event: str) -> None:
-        logger.error(f'event `{event}` is not implemented for `{obj.objectName()}\'s` type')
+        logger.error(f'event `{event}` is not implemented for `{obj.objectName()}\'s` type: {type(obj)}')

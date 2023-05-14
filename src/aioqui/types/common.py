@@ -3,4 +3,4 @@ from typing import Callable, Awaitable, Any
 
 
 Applicable = Callable[[QWidget], Awaitable]
-Event = Callable[[Any], Awaitable]
+Event = Callable[..., Awaitable]

@@ -51,7 +51,7 @@ class SizedObj(SizePolicy):
                 self.setAlignment(alignment)
 
             if size:
-                self.resize(size.size)
+                self.resize(*size.size)
                 if width or height:
                     SizedObj._warning(self)
             elif width:
@@ -60,7 +60,7 @@ class SizedObj(SizePolicy):
                 self.resize(self.width(), height)
 
             if min_size:
-                self.setMinimumSize(min_size.size)
+                self.setMinimumSize(*min_size.size)
                 if min_width or min_height:
                     SizedObj._warning(self)
             elif min_width:
@@ -69,7 +69,7 @@ class SizedObj(SizePolicy):
                 self.setMinimumHeight(min_height)
 
             if max_size:
-                self.setMaximumSize(max_size.size)
+                self.setMaximumSize(*max_size.size)
                 if max_width or max_height:
                     SizedObj._warning(self)
             elif max_width:
@@ -78,7 +78,7 @@ class SizedObj(SizePolicy):
                 self.setMaximumHeight(max_height)
 
             if fixed_size:
-                self.setFixedSize(fixed_size.size)
+                self.setFixedSize(*fixed_size.size)
                 if fixed_width or fixed_height:
                     SizedObj._warning(self)
             elif fixed_width:

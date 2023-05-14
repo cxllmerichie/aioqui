@@ -23,7 +23,8 @@ class LabelExtended(Frame):
             margins=margins, alignment=outer_alignment,
             items=[
                 label := await Label(self.parent(), self.__name).init(
-                    text=text, alignment=inner_alignment, wrap=wrap, size=size, icon=icon, elided=elided, policy=policy
+                    text=text, wrap=wrap, icon=icon, elide=Label.ElideLeft,
+                    sizes=Label.Sizes(alignment=inner_alignment, fixed_size=size, policy=policy)
                 )
             ]
         ))
