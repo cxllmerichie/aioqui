@@ -20,7 +20,7 @@ class ErrorLabel(Label):
         return self
 
     def setText(self, text: str, delay: float = 2, duration: int = 0.5) -> None:
-        if not delay:  # if delay is 0, just set the text
+        if delay == 0:  # if delay is 0, just set the text
             return Label.setText(self, '')
 
         if not text:  # text == '' means instantly clear the text and hide label without `post` action

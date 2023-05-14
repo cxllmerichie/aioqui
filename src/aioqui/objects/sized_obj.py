@@ -36,10 +36,10 @@ class SizedObj(SizePolicy):
         async def apply(self: QObject):
             nonlocal policy, vpolicy, hpolicy
             if policy:
-                self.setPolicy(policy)
+                self.setPolicy(*policy)
                 if vpolicy or hpolicy:
                     SizedObj._warning(self)
-            else:
+            elif vpolicy or hpolicy:
                 inner_policy = self.sizePolicy()
                 if not vpolicy:
                     vpolicy = inner_policy.verticalPolicy()

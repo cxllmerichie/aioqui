@@ -38,13 +38,13 @@ class EventedObj:
                     EventedObj._error(obj, 'on_change')
 
             if on_close:
-                async def close(self) -> bool:
+                def close(self) -> bool:
                     await on_close()
                     return self.close()
                 obj.close = close
 
             if on_resize:
-                async def resizeEvent(self, event: QResizeEvent) -> None:
+                def resizeEvent(self, event: QResizeEvent) -> None:
                     self.resizeEvent(self, event)
                     await on_resize()
                 obj.resizeEvent = resizeEvent

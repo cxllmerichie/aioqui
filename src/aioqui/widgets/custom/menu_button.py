@@ -1,9 +1,9 @@
-from PySide6.QtWidgets import QWidget, QSizePolicy
+from PySide6.QtWidgets import QWidget
 
 from ..button import Button
 from ..label import Label
 from ..layout import Layout
-from ...types import Icon
+from ...types import Icon, Size
 
 
 class MenuButton(Button):
@@ -12,16 +12,16 @@ class MenuButton(Button):
 
     async def init(
             self, *,
-            icon: Icon, text: str, total: int = 0, alignment: Label.Alignment = Label.Left, slot: callable = None
+            icon: Icon, text: str, total: int = 0, slot: callable = None
     ) -> 'MenuButton':
         self.setLayout(await Layout.horizontal().init(
             margins=(10, 5, 10, 5), spacing=10,
             items=[
                 icon_btn := await Button(self, f'{self.objectName()}IconBtn').init(
-                    icon=icon, disabled=True, sizes=Button.Sizes(fixed_size=icon.size, )
+                    icon=icon, disabled=True, sizes=Button.Sizes(fixed_size=Size(icon.size.width(), icon.size.height()))
                 ), Layout.Left,
                 text_lbl := await Label(self, f'{self.objectName()}TextLbl').init(
-                    text=text, elide=Label.ElideLeft, sizes=Label.Sizes(alignment=alignment, hpolicy=Label.Expanding)
+                    text=text, elide=Label.ElideRight, sizes=Label.Sizes(hpolicy=Label.Expanding)
                 ),
                 total_lbl := await Label(self, f'{self.objectName()}TotalLbl').init(
                     text=str(total)
