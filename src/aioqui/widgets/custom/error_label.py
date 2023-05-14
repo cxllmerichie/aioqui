@@ -3,7 +3,6 @@ from PySide6.QtWidgets import QWidget
 from time import sleep
 
 from ...misc import ConditionalThreadQueue
-from ...objects import EventedObj
 from ..label import Label
 from ...qasyncio import asyncSlot
 
@@ -34,7 +33,7 @@ class ErrorLabel(Label):
             sleep(delay)
 
         def post():
-            EventedObj.emit(self.reduce)
+            Label._emit(self.reduce)
 
         self.__duration = duration
         self.__ctq.new(pre, post)
