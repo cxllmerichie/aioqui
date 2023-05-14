@@ -15,9 +15,11 @@ async def select_dir(
     return dialog.getExistingDirectory()
 
 
-async def explore_dir(directory: str):
-    if os.path.isdir(directory):
-        os.startfile(directory)
+async def explore_dir(
+        dirpath: str
+) -> None:
+    if os.path.isdir(dirpath):
+        os.startfile(dirpath)
 
 
 async def select_file(
@@ -33,15 +35,18 @@ async def select_file(
 
 
 async def explore_file(
-
-):
-    ...
+        filepath: str
+) -> None:
+    if os.path.isdir(filepath):
+        os.startfile(filepath)
 
 
 async def explore_bytes(
-    filename: str, extension: str, bytes: bytes
+        filename: str,
+        extension: str,
+        bytes: bytes
 ) -> None:
-    file = tempfile.NamedTemporaryFile(prefix=filename, suffix=extension, delete=True)
+    file = tempfile.NamedTemporaryFile(prefix=filename, suffix=extension, delete=False)
     file.write(eval(bytes))
     file.close()
     QDesktopServices.openUrl(QUrl('file:///' + file.name))
