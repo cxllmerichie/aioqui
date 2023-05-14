@@ -37,5 +37,8 @@ class ScrollArea(ContextObj, ScrollPolicy, Orientation, QScrollArea):
         ))
         return await sizes(await events(self))
 
+    def addWidget(self, widget: QWidget) -> None:
+        self.widget().layout().addWidget(widget)
+
     def clear(self, exceptions: Iterable[QObject] = ()):
         self.widget().layout().clear(exceptions)
