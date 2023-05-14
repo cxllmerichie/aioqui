@@ -8,12 +8,11 @@ from ..types import Applicable
 
 
 class StackedWidget(ContextObj, Orientation, QStackedWidget):
-    def __init__(self, parent: QWidget, name: str, visible: bool = True, stylesheet: str = None):
+    def __init__(self, parent: QWidget, name: str, visible: bool = True, stylesheet: str = ''):
         QStackedWidget.__init__(self, parent)
         ContextObj.__init__(self, parent, name, visible)
-        if stylesheet:
-            self.setStyleSheet(stylesheet)
-            self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setStyleSheet(stylesheet)
+        self.setAttribute(Qt.WA_StyledBackground, True)
 
         # workaround which includes override of `setCurrentIndex`, otherwise problems with `parent()`
         self.addWidget(QWidget(self))

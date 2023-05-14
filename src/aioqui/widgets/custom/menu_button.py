@@ -12,16 +12,16 @@ class MenuButton(Button):
 
     async def init(
             self, *,
-            icon: Icon, text: str, total: int = 0, alignment: Label.Alignment = None, slot: callable = None
+            icon: Icon, text: str, total: int = 0, alignment: Label.Alignment = Label.Left, slot: callable = None
     ) -> 'MenuButton':
         self.setLayout(await Layout.horizontal().init(
             margins=(10, 5, 10, 5), spacing=10,
             items=[
                 icon_btn := await Button(self, f'{self.objectName()}IconBtn').init(
-                    size=icon.size, icon=icon, disabled=True
+                    icon=icon, disabled=True, sizes=Button.Sizes(fixed_size=icon.size, )
                 ), Layout.Left,
                 text_lbl := await Label(self, f'{self.objectName()}TextLbl').init(
-                    text=text, alignment=alignment, elided=True, policy=(QSizePolicy.Expanding, QSizePolicy.Minimum)
+                    text=text, elide=Label.ElideLeft, sizes=Label.Sizes(alignment=alignment, hpolicy=Label.Expanding)
                 ),
                 total_lbl := await Label(self, f'{self.objectName()}TotalLbl').init(
                     text=str(total)

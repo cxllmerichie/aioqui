@@ -3,6 +3,8 @@ from PySide6.QtCore import Qt
 from typing import Iterable
 
 from ..line_input import LineInput
+from ...types import Applicable
+from ...objects import SizedObj, EventedObj
 
 
 class SearchBar(LineInput):
@@ -11,14 +13,15 @@ class SearchBar(LineInput):
 
     async def init(
             self, *,
-            items: Iterable[str] = (), textchanged: callable = None, placeholder: str = '',
-            stylesheet: str = ''
+            items: Iterable[str] = (), placeholder: str = '', stylesheet: str = '',
+            sizes: Applicable = SizedObj.Sizes(), events: Applicable = EventedObj.Events()
     ) -> 'SearchBar':
         completer = QCompleter(set(items))
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         completer.popup().setObjectName(f'{self.objectName()}Popup')
         completer.popup().setItemDelegate(QStyledItemDelegate(completer))
         completer.popup().setStyleSheet(stylesheet)
+        self.setStyleSheet(stylesheet)
         self.setCompleter(completer)
-        await super().init(textchanged=textchanged, placeholder=placeholder)
+        await super().init(placeholder=placeholder, events=events, sizes=sizes)
         return self

@@ -17,11 +17,9 @@ class ImageButton(Button):
             self, *,
             icon: Icon, slot: callable = lambda: None, directory: str = ''
     ) -> 'ImageButton':
-        await super().init(icon=icon)
-        self.clicked.connect(lambda: self.choose_image(slot, directory))
+        await super().init(icon=icon, events=Button.Events(on_click=lambda: self.choose_image(slot, directory)))
         self.RemoveImageBtn = await Button(self, f'{self.objectName()}RemoveImageBtn').init(
-            icon=Icon('x-circle.svg', (30, 30)),
-            sizes=Button.Sizes(fixed_size=Size(30, 30)),
+            icon=Icon('x-circle.svg', (30, 30)), sizes=Button.Sizes(fixed_size=Size(30, 30)),
             events=Button.Events(
                 on_click=lambda: Popup(self.core).display(message=f'Remove icon?', on_success=self.remove_icon)
             )

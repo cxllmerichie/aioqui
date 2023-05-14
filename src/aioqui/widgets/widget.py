@@ -6,12 +6,11 @@ from ..types import Applicable
 
 
 class Widget(ContextObj, QWidget):
-    def __init__(self, parent: QWidget, name: str, visible: bool = True, stylesheet: str = None):
+    def __init__(self, parent: QWidget, name: str, visible: bool = True, stylesheet: str = ''):
         QWidget.__init__(self, parent)
         ContextObj.__init__(self, parent, name, visible)
-        if stylesheet:
-            self.setAttribute(Qt.WA_StyledBackground, True)
-            self.setStyleSheet(stylesheet)
+        self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setStyleSheet(stylesheet)
 
     async def init(
             self, *,

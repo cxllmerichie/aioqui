@@ -5,11 +5,10 @@ from ..types import Applicable
 
 
 class Frame(ContextObj, QFrame):
-    def __init__(self, parent: QWidget, name: str, visible: bool = True, stylesheet: str = None):
+    def __init__(self, parent: QWidget, name: str, visible: bool = True, stylesheet: str = ''):
         QFrame.__init__(self, parent)
         ContextObj.__init__(self, parent, name, visible)
-        if stylesheet:
-            self.setStyleSheet(stylesheet)
+        self.setStyleSheet(stylesheet)
 
     async def init(
             self, *,

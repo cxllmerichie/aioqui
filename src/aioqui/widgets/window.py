@@ -6,11 +6,10 @@ from ..types import Applicable
 
 
 class Window(WindowHint, QMainWindow):
-    def __init__(self, name: str, stylesheet: str = None):
+    def __init__(self, name: str, stylesheet: str = ''):
         QMainWindow.__init__(self)
         self.setObjectName(name)
-        if stylesheet:
-            self.setStyleSheet(stylesheet)
+        self.setStyleSheet(stylesheet)
 
     async def init(
             self, *,

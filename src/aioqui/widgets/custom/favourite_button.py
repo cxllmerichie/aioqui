@@ -19,8 +19,7 @@ class FavouriteButton(Button):
             if_set_icon: Icon = None, if_unset_icon: Icon = None, pre_slot: Callable[..., bool],
             **kwargs
     ) -> 'Button':
-        await super().init(**kwargs)
-        self.clicked.connect(lambda: self.slot(pre_slot))
+        await super().init(events=Button.Events(on_click=lambda: self.slot(pre_slot)), **kwargs)
         if if_unset_icon:
             self.setIcon(QIcon(if_unset_icon.icon))
             self.setIconSize(if_unset_icon.size)
