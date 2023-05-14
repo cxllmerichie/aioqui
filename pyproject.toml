@@ -3,15 +3,15 @@ requires = ["setuptools>=63.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "qcontext"
-version = "1.1.0"
+name = "aioqui"
+version = "1.0.0"
 authors = [
     { name="cxllmerichie", email="cxllmerichie@gmail.com" },
 ]
 maintainers = [
     { name="cxllmerichie", email="cxllmerichie@gmail.com" },
 ]
-description = "One of the most controversial things"
+description = "Asynchronous GUI framework based on PySide6"
 readme = "README.md"
 license = { file="LICENSE.txt" }
 requires-python = ">=3.10"
@@ -36,8 +36,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License"
 ]
 dependencies=[
-    "PyQt5~=5.15.9",
-    "PyQt5-stubs~=5.15.6.0",
+    "PySide6~=6.5.0",
     "qasync~=0.24.0",
     "loguru~=0.6.0"
 
@@ -50,10 +49,10 @@ dependencies=[
 ]
 
 [tool.setuptools.package-data]
-qcontext = [".assets/*"]
+aioqui = [".assets/icons/*"]
 
 [project.urls]
-"Homepage" = "https://github.com/cxllmerichie/qcontext"
-"Bug Tracker" = "https://github.com/cxllmerichie/qcontext/issues"
-"Repository" = "https://github.com/cxllmerichie/qcontext"
-"Documentation" = "https://github.com/cxllmerichie/qcontext/README.md"
+"Homepage" = "https://github.com/cxllmerichie/aioqui"
+"Bug Tracker" = "https://github.com/cxllmerichie/aioqui/issues"
+"Repository" = "https://github.com/cxllmerichie/aioqui"
+"Documentation" = "https://github.com/cxllmerichie/aioqui/README.md"

@@ -3,5 +3,5 @@
 __pycache__/
 
 dist/
-src/qcontext.egg-info/
+*.egg-info/
 *.env
