@@ -1,13 +1,10 @@
 from PySide6.QtGui import QResizeEvent
-from PySide6.QtWidgets import QMessageBox, QWidget
+from PySide6.QtWidgets import QMessageBox
 from qasync import asyncSlot
 from typing import Iterable
 
-from .widget import Widget
-from .layout import Layout
-from .button import Button
-from .label import Label
-from .frame import Frame
+from .. import Widget, Layout, Button, Label, Frame
+from ...types import Parent
 
 
 class Popup(Widget):
@@ -66,7 +63,7 @@ class Popup(Widget):
         }}
         '''
 
-    def __init__(self, parent: QWidget, name: str = None, stylesheet: str = stylesheet):
+    def __init__(self, parent: Parent, name: str = None, stylesheet: str = stylesheet):
         super().__init__(parent, name if name else self.__class__.__name__, True, stylesheet)
 
     @asyncSlot()
@@ -80,19 +77,19 @@ class Popup(Widget):
         btns = []
         if Popup.YES in buttons:
             btns.append(await Button(self, f'{self.objectName()}YesBtn').init(
-                text='Yes', events=Button.Events(on_click=lambda: self.slot(on_success))
+                text='Yes', on_click=lambda: self.slot(on_success)
             ))
         if Popup.NO in buttons:
             btns.append(await Button(self, f'{self.objectName()}NoBtn').init(
-                text='No', events=Button.Events(on_click=lambda: self.slot(on_failure))
+                text='No', on_click=lambda: self.slot(on_failure)
             ))
         if Popup.OK in buttons:
             btns.append(await Button(self, f'{self.objectName()}OkBtn').init(
-                text='Ok', events=Button.Events(on_click=lambda: self.slot(on_success))
+                text='Ok', on_click=lambda: self.slot(on_success)
             ))
         if Popup.CANCEL in buttons:
             btns.append(await Button(self, f'{self.objectName()}CancelBtn').init(
-                text='Cancel', events=Button.Events(on_click=lambda: self.slot(on_failure))
+                text='Cancel', on_click=lambda: self.slot(on_failure)
             ))
 
         self.setLayout(await Layout.vertical().init(
@@ -103,7 +100,7 @@ class Popup(Widget):
                         spacing=20, margins=(20, 20, 20, 20),
                         items=[
                             await Label(self, f'{self.objectName()}MessageLbl').init(
-                                text=message, wrap=True, sizes=Label.Sizes(alignment=Layout.Center)
+                                text=message, wrap=True, alignment=Layout.Center
                             ),
                             await Layout.horizontal().init(
                                 spacing=20, items=btns

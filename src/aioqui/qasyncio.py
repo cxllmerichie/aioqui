@@ -25,11 +25,11 @@ class AsyncApp:
             sys.exit(0)
 
 
-def to_async_slot(to_call):
-    @asyncSlot()
-    async def wrapped():
-        print(type(to_call))
-        if to_call.__class__.__name__ in ('function', 'method'):
-            await to_call()
-        # elif
-    return wrapped
+# def to_async_slot(to_call):
+#     @asyncSlot()
+#     async def wrapped():
+#         print(type(to_call))
+#         if to_call.__class__.__name__ in ('function', 'method'):
+#             await to_call()
+#         # elif
+#     return wrapped

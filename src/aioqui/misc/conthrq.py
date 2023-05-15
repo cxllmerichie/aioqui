@@ -2,16 +2,15 @@ from uuid import uuid4, UUID
 from threading import Thread
 
 
-class ConditionalThread(Thread):
-    to_complete: bool = True
-
-    def kill(self):
-        self.to_complete = False
-
-
 class ConditionalThreadQueue:
+    class ConditionalThread(Thread):
+        to_complete: bool = True
+
+        def kill(self) -> None:
+            self.to_complete = False
+
     def __init__(self):
-        self.__threads: dict[UUID, ConditionalThread] = {}
+        self.__threads: dict[UUID, ConditionalThreadQueue.ConditionalThread] = {}
 
     def new(self, pre: callable, post: callable) -> UUID:
         if self.__threads:  # kill prev thread if exists
@@ -26,7 +25,7 @@ class ConditionalThreadQueue:
             self.__threads.pop(thread_uuid)
 
         uuid = uuid4()
-        thread = ConditionalThread(target=target, args=(uuid, ))
+        thread = ConditionalThreadQueue.ConditionalThread(target=target, args=(uuid, ))
         self.__threads[uuid] = thread
         thread.start()
         return uuid

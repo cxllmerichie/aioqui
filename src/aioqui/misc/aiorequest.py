@@ -1,45 +1,96 @@
-from typing import Any
+from typing import Any, Callable
 import aiohttp
 import ujson
 
 
 class Request:
-    __base_url = None
+    __base: Callable[..., str] | str = None
 
     @property
-    async def base_url(self) -> str | None:
-        if isinstance(self.__base_url, str):
-            return self.__base_url
-        if self.__base_url.__class__.__name__ == 'function':
-            url = self.__base_url()
+    async def baseurl(self) -> str | None:
+        if isinstance(self.__base, str):
+            return self.__base
+        if self.__base.__class__.__name__ == 'function':
+            url = self.__base()
             if url.__class__.__name__ == 'coroutine':
                 return await url
             return url
 
-    @base_url.setter
-    def base_url(self, base_url):
-        self.__base_url = base_url
+    @baseurl.setter
+    def baseurl(self, base_url: Callable[..., str] | str):
+        self.__base = base_url
 
-    async def __call__(
+    async def __call__(self, method: str, url: str, **kwargs) -> Any:
+        # convert params values to str
+        if params := kwargs['params']:
+            for key, value in params.items():
+                kwargs['params'][key] = str(value)
+        # assure that `method` supports
+        assert (method := method.lower()) in ('get', 'post', 'put', 'delete')
+        # request
+        async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
+            async with getattr(session, method)(
+                    await self.__url(url, kwargs['nobase']),
+                    json=kwargs['body'],
+                    params=kwargs['params'],
+                    headers=kwargs['headers'],
+                    data=kwargs['data']
+            ) as response:
+                try:
+                    return await response.json()
+                except Exception:
+                    raise ValueError(await response.text())
+
+    async def get(
             self,
-            method: str, url: str,
+            url: str,
             *,
-            params: dict[str, Any] = None, body: dict[str, Any] = None, headers: dict[str, Any] = None,
+            params: dict[str, Any] = None,
+            headers: dict[str, Any] = None,
+            body: dict[str, Any] = None,
             data: dict[str, Any] = None,
             nobase: bool = False
     ) -> Any:
-        assert (method := method.lower()) in ('get', 'post', 'put', 'delete')
-        async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
-            # convert params values to str
-            for key, value in params.items() if params else {}:
-                params[key] = str(value)
-            async with getattr(session, method)(
-                    await self.__url(url, nobase), json=body, params=params, headers=headers, data=data
-            ) as response:
-                return await response.json()
+        return await self('get', url, params=params, headers=headers, body=body, data=data, nobase=nobase)
+
+    async def post(
+            self,
+            url: str,
+            *,
+            params: dict[str, Any] = None,
+            headers: dict[str, Any] = None,
+            body: dict[str, Any] = None,
+            data: dict[str, Any] = None,
+            nobase: bool = False
+    ) -> Any:
+        return await self('post', url, params=params, headers=headers, body=body, data=data, nobase=nobase)
+
+    async def put(
+            self,
+            url: str,
+            *,
+            params: dict[str, Any] = None,
+            headers: dict[str, Any] = None,
+            body: dict[str, Any] = None,
+            data: dict[str, Any] = None,
+            nobase: bool = False
+    ) -> Any:
+        return await self('put', url, params=params, headers=headers, body=body, data=data, nobase=nobase)
+
+    async def delete(
+            self,
+            url: str,
+            *,
+            params: dict[str, Any] = None,
+            headers: dict[str, Any] = None,
+            body: dict[str, Any] = None,
+            data: dict[str, Any] = None,
+            nobase: bool = False
+    ) -> Any:
+        return await self('delete', url, params=params, headers=headers, body=body, data=data, nobase=nobase)
 
     async def __url(self, url: str, nobase: bool = False):
-        if not (base := await self.base_url) or nobase:
+        if not (base := await self.baseurl) or nobase:
             return url
         if base.endswith('/') and url.startswith('/'):
             return base[:-1] + url

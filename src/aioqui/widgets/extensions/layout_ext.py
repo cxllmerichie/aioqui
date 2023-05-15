@@ -2,8 +2,10 @@ from PySide6.QtWidgets import QWidget, QLayoutItem, QSpacerItem
 from PySide6.QtCore import Qt, QObject
 from typing import Sequence, Iterable
 
+from ...enums import Alignment
 
-class LayoutExt:
+
+class LayoutExt(Alignment):
     async def init(
             self, *,
             margins: tuple[int, ...] = (0, 0, 0, 0), spacing: int = 0, alignment: Qt.Alignment = None,

@@ -1,13 +1,13 @@
-from PySide6.QtCore import Qt
+from ...enums import Orientation
 
 
 class SideMenuExt:
-    def __init__(self, expand_to, expand_orientation: Qt.Orientation = Qt.Horizontal):
-        self.expand_to = expand_to
-        self.expand_orientation = expand_orientation
+    def __init__(self, expand_to: int, expand_orientation: Orientation.Orientation):
+        self.expand_to: int = expand_to
+        self.__expand_orientation: Orientation.Orientation = expand_orientation
 
-    def __dimension(self):
-        return self.width() if self.expand_orientation is Qt.Horizontal else self.height()
+    def __size(self):
+        return self.width() if self.__expand_orientation is Orientation.Horizontal else self.height()
 
     def expand(self, expand_to: int = None):
         if expand_to:
@@ -18,4 +18,4 @@ class SideMenuExt:
         self.setFixedWidth(0)
 
     def toggle(self) -> None:
-        self.expand() if self.__dimension() == 0 else self.shrink()
+        self.expand() if self.__size() == 0 else self.shrink()

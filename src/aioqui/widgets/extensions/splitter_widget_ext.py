@@ -1,27 +1,30 @@
 from PySide6.QtWidgets import QSplitter
-from loguru import logger as _logger
 
-from ...enums import Orientation, SizePolicy
+from ...enums import Orientation
 
 
 class SplitterWidgetExt(Orientation):
     splitter: QSplitter
+    __orientation: Orientation.Orientation
 
-    def __init__(self, expand_to: int,
-                 expand_min: int = None, expand_max: int = None, orientation: Orientation.Orientation = None,
-                 policy: tuple[SizePolicy.SizePolicy, SizePolicy.SizePolicy] = (SizePolicy.Expanding, SizePolicy.Expanding)):
+    def __init__(self, expand_to: int, expand_min: int = None, expand_max: int = None, collapsible: bool = True):
         self.expand_to: int = expand_to
-        self.setSizePolicy(*policy)
+        self.expand_min: int = expand_min
+        self.expand_max: int = expand_max
+        self.collapsible: bool = collapsible
 
-        if expand_min or expand_max:
-            if orientation:
-                dimension = 'width' if orientation is Orientation.Horizontal else 'height'
-                if expand_min:
-                    getattr(self, f'setMinimum{dimension.capitalize()}')(expand_min)
-                if expand_max:
-                    getattr(self, f'setMaximum{dimension.capitalize()}')(expand_max)
-            else:
-                _logger.info('`expand_min` and `expand_max` set but `orientation` is `None`')
+    @property
+    def orientation(self) -> Orientation.Orientation:
+        return self.Orientation
+
+    @orientation.setter
+    def orientation(self, orientation: Orientation.Orientation) -> None:
+        dimension = 'width' if orientation is Orientation.Horizontal else 'height'
+        if self.expand_min:
+            getattr(self, f'setMinimum{dimension.capitalize()}')(self.expand_min)
+        if self.expand_max:
+            getattr(self, f'setMaximum{dimension.capitalize()}')(self.expand_max)
+        self.__orientation = orientation
 
     def _index(self) -> int:
         for index in range(self.splitter.count()):

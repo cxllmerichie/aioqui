@@ -1,31 +1,30 @@
-from PySide6.QtWidgets import QWidget, QStackedWidget
-from PySide6.QtCore import Qt, QObject
+from PySide6.QtWidgets import QStackedWidget, QFrame
+from PySide6.QtCore import QObject
 from typing import Iterable
 
-from ..objects import ContextObj, SizedObj, EventedObj
+from ..context import ContextObj
 from ..enums import Alignment, Orientation
-from ..types import Applicable
+from ..types import QSS, Parent
 
 
 class StackedWidget(ContextObj, Orientation, QStackedWidget):
-    def __init__(self, parent: QWidget, name: str, visible: bool = True, stylesheet: str = ''):
+    def __init__(self, parent: Parent, name: str, visible: bool = True, qss: QSS = None):
         QStackedWidget.__init__(self, parent)
         ContextObj.__init__(self, parent, name, visible)
-        self.setStyleSheet(stylesheet)
-        self.setAttribute(Qt.WA_StyledBackground, True)
+        self.qss = qss
 
         # workaround which includes override of `setCurrentIndex`, otherwise problems with `parent()`
-        self.addWidget(QWidget(self))
+        self.addWidget(QFrame(self))  # QFrame is likely the most lightweight QWidget in Qt6
 
     async def init(
             self, *,
             alignment: Alignment.Alignment = Alignment.HCenter, items: Iterable[QObject] = (),
-            sizes: Applicable = SizedObj.Sizes(), events: Applicable = EventedObj.Events()
+            **kwargs
     ) -> 'StackedWidget':
         self.layout().setAlignment(alignment)
         for item in items:
             self.addWidget(item)
-        return await sizes(await events(self))
+        return await self._apply(**kwargs)
 
     def setCurrentIndex(self, index: int) -> None:
         super().setCurrentIndex(index + 1)

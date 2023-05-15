@@ -1,23 +1,18 @@
-from PySide6.QtWidgets import QPushButton, QWidget
-from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QPushButton
 
-from ..objects import ContextObj, SizedObj, EventedObj
-from ..types import Applicable, Icon
+from ..types import Parent, QSS
+from ..context import ContextObj
 
 
 class Button(ContextObj, QPushButton):
-    def __init__(self, parent: QWidget, name: str, visible: bool = True):
+    def __init__(self, parent: Parent, name: str, visible: bool = True, qss: QSS = None):
         QPushButton.__init__(self, parent)
         ContextObj.__init__(self, parent, name, visible)
+        self.qss = qss
 
     async def init(
             self, *,
-            text: str = '', icon: Icon = None, disabled: bool = False,
-            sizes: Applicable = SizedObj.Sizes(), events: Applicable = EventedObj.Events()
+            _=...,
+            **kwargs
     ) -> 'Button':
-        self.setText(text)
-        self.setDisabled(disabled)
-        if icon:
-            self.setIcon(QIcon(icon.icon))
-            self.setIconSize(icon.size)
-        return await sizes(await events(self))
+        return await self._apply(**kwargs)

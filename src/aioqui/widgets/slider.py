@@ -1,24 +1,25 @@
-from PySide6.QtWidgets import QSlider, QWidget
+from PySide6.QtWidgets import QSlider
+from PySide6.QtCore import Qt
 
-from ..objects import ContextObj
+from ..context import ContextObj
 from ..enums import Orientation
+from ..types import Parent
 
 
 class Slider(ContextObj, Orientation, QSlider):
-    def __init__(self, parent: QWidget, name: str, visible: bool = True):
-        QSlider.__init__(self, parent)
+    def __init__(self, parent: Parent, name: str, visible: bool = True,
+                 orientation: Orientation.Orientation = Orientation.Horizontal):
+        QSlider.__init__(self, orientation, parent)
         ContextObj.__init__(self, parent, name, visible)
-    #
-    # async def init(
-    #         self, *,
-    #         orientation: OrientationExt.Orientation, step: int = 1,
-    #         on_change: callable = None
-    # ) -> 'Slider':
-    #     self.setFocusPolicy(Qt.StrongFocus)
-    #     self.setTickPosition(QSlider.TicksBothSides)
-    #     self.setTickInterval(10)
-    #     self.setSingleStep(10)
-    #     self.setValue(self.controls.get(display=display))
-    #     if on_change:
-    #         self.valueChanged.connect(lambda: self.controls.set(display=display, value=slider.value()))
-    #     return self
+
+    async def init(
+            self, *,
+            step: int, value: int,
+            **kwargs
+    ) -> 'Slider':
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.setTickPosition(QSlider.TickPosition.TicksBothSides)
+        self.setTickInterval(10)
+        self.setSingleStep(step)
+        self.setValue(value)
+        return await self.apply(**kwargs)

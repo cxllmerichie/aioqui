@@ -4,3 +4,4 @@ from .size_policy import SizePolicy
 from .window_hint import WindowHint
 from .scroll_policy import ScrollPolicy
 from .elide_mode import ElideMode
+from .echo_mode import EchoMode

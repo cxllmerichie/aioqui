@@ -2,9 +2,7 @@ from PySide6.QtWidgets import QWidget, QCompleter, QStyledItemDelegate
 from PySide6.QtCore import Qt
 from typing import Sequence
 
-from ..line_input import LineInput
-from ...types import Applicable
-from ...objects import SizedObj, EventedObj
+from ..input import LineInput
 
 
 class SearchBar(LineInput):
@@ -21,9 +19,9 @@ class SearchBar(LineInput):
 
     async def init(
             self, *,
-            placeholder: str, completer: Completer, hidden: bool = False,
-            sizes: Applicable = SizedObj.Sizes(), events: Applicable = EventedObj.Events()
+            completer: Completer,
+            **kwargs
     ) -> 'LineInput':
-        await super().init(placeholder=placeholder, hidden=hidden, events=events, sizes=sizes)
+        await LineInput.init(self, **kwargs)
         self.setCompleter(completer)
         return self

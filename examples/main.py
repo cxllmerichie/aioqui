@@ -1,4 +1,5 @@
 from src.aioqui.widgets import *
+from src.aioqui.widgets.custom import *
 from src.aioqui.qasyncio import AsyncApp, asyncSlot
 from src.aioqui import CONTEXT, qasyncio
 
@@ -17,7 +18,7 @@ css = f'''
 
 class CentralWidget(Frame):
     def __init__(self, parent: Parent):
-        super().__init__(parent, self.__class__.__name__, stylesheet=css)
+        super().__init__(parent, self.__class__.__name__, qss=css)
 
     async def init(self) -> 'CentralWidget':
         self.setLayout(await Layout.vertical().init(
@@ -29,9 +30,7 @@ class CentralWidget(Frame):
                         items=[
                             await Label(self, 'ElideLeftLbl').init(
                                 text='Elide left', elide=Label.ElideLeft,
-                                sizes=Label.Sizes(
-                                    min_width=100
-                                )
+                                min_width=100
                             ), Layout.Left,
                             await Label(self, 'ElideRightLbl').init(
                                 text='Elide right', elide=Label.ElideRight
@@ -40,10 +39,10 @@ class CentralWidget(Frame):
                     )
                 ),
                 await Button(self, 'TestBtn').init(
-                    events=Button.Events(
-                        on_click=self.test
-                    )
-                )
+                    on_click=lambda: self.ErrorLabel.setText('Disappear with animation')
+                ),
+                await Input.line(self, 'LineEdit').init(),
+                await ErrorLabel(self).init()
             ]
         ))
         return self
@@ -63,8 +62,8 @@ class App(Window):
 
 
 if __name__ == '__main__':
-    async def run_app():
+    async def amain():
         app = await App().init()
         app.show()
 
-    AsyncApp.run(run_app)
+    AsyncApp.run(amain)

@@ -3,7 +3,7 @@ from PySide6.QtGui import QIcon
 from contextlib import suppress
 
 from ..button import Button
-from ..popup import Popup
+from src.aioqui.widgets.custom.popup import Popup
 from ...types import Icon, Size
 from ...qasyncio import asyncSlot
 
@@ -17,12 +17,10 @@ class ImageButton(Button):
             self, *,
             icon: Icon, slot: callable = lambda: None, directory: str = ''
     ) -> 'ImageButton':
-        await super().init(icon=icon, events=Button.Events(on_click=lambda: self.choose_image(slot, directory)))
+        await super().init(icon=icon, on_click=lambda: self.choose_image(slot, directory))
         self.RemoveImageBtn = await Button(self, f'{self.objectName()}RemoveImageBtn').init(
-            icon=Icon('x-circle.svg', (30, 30)), sizes=Button.Sizes(fixed_size=Size(30, 30)),
-            events=Button.Events(
-                on_click=lambda: Popup(self.core).display(message=f'Remove icon?', on_success=self.remove_icon)
-            )
+            icon=Icon('x-circle.svg', (30, 30)), fixed_size=Size(30, 30),
+            on_click=lambda: Popup(self.core).display(message=f'Remove icon?', on_success=self.remove_icon)
         )
         self.RemoveImageBtn.move(self.width() - 30, 0)
         self.RemoveImageBtn.setStyleSheet(f'''

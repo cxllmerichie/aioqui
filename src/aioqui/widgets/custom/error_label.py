@@ -8,15 +8,18 @@ from ...qasyncio import asyncSlot
 
 
 class ErrorLabel(Label):
+    __duration: float = 0.5
+    __ctq: ConditionalThreadQueue = ConditionalThreadQueue()
+
     def __init__(self, parent: QWidget, name: str = None, visible: bool = True):
         super().__init__(parent, name if name else self.__class__.__name__, visible)
-        self.__ctq = ConditionalThreadQueue()
-        self.__opacity: float = 1
-        self.__duration: float = 0.5
 
-    async def init(self, *args, **kwargs) -> 'ErrorLabel':
-        await super().init(*args, **kwargs)
-        return self
+    async def init(
+            self, *,
+            _=None,
+            **kwargs
+    ) -> 'ErrorLabel':
+        return await Label.init(self, **kwargs)
 
     def setText(self, text: str, delay: float = 2, duration: int = 0.5) -> None:
         if delay == 0:  # if delay is 0, just set the text
@@ -53,4 +56,5 @@ class ErrorLabel(Label):
         self.__opacity = opacity
         self.setStyleSheet(f'color: rgba(255, 0, 0, {opacity});')
 
-    _opacity = Property(float, _get_opacity, _set_opacity)
+    __opacity: float = 1
+    _opacity: Property = Property(float, _get_opacity, _set_opacity)

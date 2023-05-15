@@ -1,46 +1,41 @@
-from PySide6.QtWidgets import QWidget, QSplitter, QSizePolicy
-from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QSplitter
 from typing import Iterable
 
-from .widget import Widget
+from .frame import Frame
 from .extensions import SplitterWidgetExt
-from ..objects import ContextObj
+from ..context import ContextObj
 from ..enums import Orientation
+from ..types import QSS, Parent
 
 
-class SplitterHandle(Widget):
-    def __init__(self, parent: QWidget, name: str):
-        super().__init__(parent, name, True)
+class Splitter(ContextObj, Orientation, QSplitter):
+    class Handle(Frame):
+        def __init__(self, parent: Parent, name: str):
+            super().__init__(parent, name, True)
 
+    class Widget(SplitterWidgetExt, Frame):
+        def __init__(self, parent: Parent, name: str, *, collapsible: bool = True,
+                     expand_to: int, expand_min: int = None, expand_max: int = None):
+            Frame.__init__(self, parent, name, True)
+            SplitterWidgetExt.__init__(self, expand_to, expand_min, expand_max, collapsible)
 
-class SplitterWidget(SplitterWidgetExt, Widget):
-    def __init__(self, parent: QWidget, name: str,
-                 expand_to: int, expand_min: int = None, expand_max: int = None,
-                 orientation: Orientation.Orientation = None):
-        Widget.__init__(self, parent, name, True)
-        SplitterWidgetExt.__init__(self, expand_to, expand_min, expand_max, orientation)
-
-
-class Splitter(ContextObj, QSplitter):
-    def __init__(self, parent: QWidget, name: str, visible: bool = True, stylesheet: str = None,
-                 orientation: Orientation.Orientation = Orientation.Horizontal,
-                 policy: tuple[QSizePolicy, QSizePolicy] = (QSizePolicy.Expanding, QSizePolicy.Expanding)):
+    def __init__(self, parent: Parent, name: str, visible: bool = True, qss: QSS = None,
+                 orientation: Orientation.Orientation = Orientation.Horizontal):
         QSplitter.__init__(self, orientation, parent)
         ContextObj.__init__(self, parent, name, visible)
-        if stylesheet:
-            self.setStyleSheet(stylesheet)
-            self.setAttribute(Qt.WA_StyledBackground, True)
-        self.setSizePolicy(*policy)
+        self.qss = qss
 
     async def init(
             self, *,
-            items: Iterable[QWidget] = ()
+            items: Iterable[Widget] = (),
+            **kwargs
     ) -> 'Splitter':
         for item in items:
             self.addWidget(item)
-        return self
+        return await self._apply(**kwargs)
 
-    def addWidget(self, widget: QWidget, collapsible: bool = True) -> None:
+    def addWidget(self, widget: Widget) -> None:
         super().addWidget(widget)
-        self.setCollapsible(self.count() - 1, collapsible)
         widget.splitter = self
+        widget.orientation = self.orientation()
+        self.setCollapsible(self.count() - 1, widget.collapsible)

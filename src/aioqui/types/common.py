@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QWidget
-from typing import Callable, Awaitable, Any
+from typing import Callable, Awaitable, Iterable, Optional
 
 
-Applicable = Callable[[QWidget], Awaitable]
 Event = Callable[..., Awaitable]
+Parent = QWidget
+QSS = Optional[str | Iterable[str]]
