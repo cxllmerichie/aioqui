@@ -1,6 +1,6 @@
 from PySide6.QtGui import QPixmap, QIcon, QImage
 from PySide6.QtCore import QSize, QBuffer, QIODevice
-# from loguru import logger
+from loguru import logger
 import base64
 import os
 
@@ -8,15 +8,14 @@ from .size import Size
 
 
 class Icon:
-    IconType = type[QIcon, str, bytes]
-    SizeType = type[Size, QSize, tuple[int, int], Ellipsis, None]
-
+    icon_t: type = QIcon | str | bytes
+    size_t: type = QSize | Size | tuple[int, int] | None
 
     root = os.path.join(os.path.dirname(__file__), os.path.pardir, '.assets', 'icons')
     __icon: QIcon = None
     __size: QSize = None
 
-    def __init__(self, instance: IconType, size: SizeType = None):
+    def __init__(self, instance: icon_t, size: size_t = None):
         self.icon = instance
         if size:
             self.size = size
@@ -30,7 +29,7 @@ class Icon:
         return self.__size
 
     @icon.setter
-    def icon(self, instance: IconType) -> None:
+    def icon(self, instance: icon_t) -> None:
         """
 
         :param instance: QIcon, string filename with already set Icon.root, icon bytes
@@ -62,7 +61,7 @@ class Icon:
         self.icon.addPixmap(self.__icon.pixmap(1000), mode=QIcon.Disabled)  # fix of `QPushButton.setDisabled()`
 
     @size.setter
-    def size(self, size: SizeType) -> None:
+    def size(self, size: size_t) -> None:
         """
 
         :param size: QSize, qcontextapi.Size, tuple[int, int]
@@ -77,9 +76,9 @@ class Icon:
         else:
             raise AttributeError(f'unknown type ({type(size)}) of size ({size}), can not set Icon.size')
 
-    def adjusted(self, icon: IconType = None, size: SizeType = None) -> 'Icon':
-        # if not icon and not size:
-        #     logger.warning('Icon.adjusted() called without parameters. Redundant call.')
+    def adjusted(self, icon: icon_t = None, size: size_t = None) -> 'Icon':
+        if not icon and not size:
+            logger.info('Icon.adjusted() called without parameters. Redundant call.')
         if icon:
             self.icon = icon
         if size:
@@ -87,7 +86,7 @@ class Icon:
         return self
 
     @staticmethod
-    def bytes(icon: IconType, size: SizeType = None) -> bytes:
+    def bytes(icon: icon_t, size: size_t = None) -> bytes:
         icon = Icon(icon, size)
         # image = QImage(icon.icon.pixmap(icon.size).toImage())
         image = QImage(icon.icon.pixmap(QSize(512, 512)).toImage())

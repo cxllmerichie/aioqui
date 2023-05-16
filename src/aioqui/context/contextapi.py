@@ -1,9 +1,10 @@
 from PySide6.QtCore import QSettings as _QSettings
+from loguru import logger
 import socket as _socket
 from typing import Any
 
 
-class ContextAPI:
+class ContextAPI:  # create warning when instance is reassigned
     __settings = _QSettings(_socket.gethostname(), __file__)
     debug: bool = False
 
@@ -14,4 +15,4 @@ class ContextAPI:
         return self.__settings.setValue(key, value)
 
 
-CONTEXT = ContextAPI()
+CONTEXT: ContextAPI = ContextAPI()

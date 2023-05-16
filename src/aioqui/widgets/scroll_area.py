@@ -5,8 +5,7 @@ from typing import Sequence, Iterable
 from .frame import Frame
 from .layout import Layout
 from ..context import ContextObj
-from ..enums import Orientation, ScrollPolicy
-from ..types import QSS, Parent
+from ..types import QSS, Parent, Orientation, ScrollPolicy
 
 
 class ScrollArea(ContextObj, ScrollPolicy, Orientation, QScrollArea):

@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QSplitter
 
-from ...enums import Orientation
+from ...types import Orientation
 
 
 class SplitterWidgetExt(Orientation):

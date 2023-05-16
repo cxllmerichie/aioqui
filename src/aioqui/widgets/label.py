@@ -1,8 +1,7 @@
 from PySide6.QtGui import QFontMetrics, QPaintEvent
 from PySide6.QtWidgets import QLabel
 
-from ..enums import Alignment, ElideMode, SizePolicy
-from ..types import Parent, QSS
+from ..types import Parent, QSS, Alignment, ElideMode, SizePolicy
 from ..context import ContextObj
 
 

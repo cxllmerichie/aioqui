@@ -6,3 +6,6 @@ class Size:
     @property
     def size(self):
         return self.w, self.h
+
+    def __iter__(self):
+        yield from self.size

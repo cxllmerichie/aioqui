@@ -1,17 +1,17 @@
 from PySide6.QtCore import QPropertyAnimation, Property
-from PySide6.QtWidgets import QWidget
 from time import sleep
 
 from ...misc import ConditionalThreadQueue
 from ..label import Label
 from ...qasyncio import asyncSlot
+from ...types import Parent
 
 
 class ErrorLabel(Label):
     __duration: float = 0.5
     __ctq: ConditionalThreadQueue = ConditionalThreadQueue()
 
-    def __init__(self, parent: QWidget, name: str = None, visible: bool = True):
+    def __init__(self, parent: Parent, name: str = None, visible: bool = True):
         super().__init__(parent, name if name else self.__class__.__name__, visible)
 
     async def init(
@@ -36,7 +36,7 @@ class ErrorLabel(Label):
             sleep(delay)
 
         def post():
-            Label._emit(self.reduce)
+            self.emit_event(self.reduce)
 
         self.__duration = duration
         self.__ctq.new(pre, post)
@@ -52,7 +52,7 @@ class ErrorLabel(Label):
     def _get_opacity(self):
         return self.__opacity
 
-    def _set_opacity(self, opacity):
+    def _set_opacity(self, opacity: float):
         self.__opacity = opacity
         self.setStyleSheet(f'color: rgba(255, 0, 0, {opacity});')
 

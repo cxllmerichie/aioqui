@@ -1,64 +1,65 @@
-from PySide6.QtWidgets import QWidget, QFileDialog
 from PySide6.QtGui import QIcon
 from contextlib import suppress
 
 from ..button import Button
-from src.aioqui.widgets.custom.popup import Popup
-from ...types import Icon, Size
+from .popup import Popup
+from ...types import Icon, Size, Parent, Event, DefaultEvent
 from ...qasyncio import asyncSlot
+from ...misc import fileops
+from ..qss.popup import qss
 
 
 class ImageButton(Button):
-    def __init__(self, parent: QWidget, name: str = None, visible: bool = True):
+    RemoveBtn: Button
+
+    bytes = None
+
+    def __init__(self, parent: Parent, name: str = None, visible: bool = True):
         super().__init__(parent, name if name else self.__class__.__name__, visible)
-        self.image_bytes = None
 
     async def init(
             self, *,
-            icon: Icon, slot: callable = lambda: None, directory: str = ''
+            on_success: Event = DefaultEvent, directory: str = '',
+            **kwargs
     ) -> 'ImageButton':
-        await super().init(icon=icon, on_click=lambda: self.choose_image(slot, directory))
-        self.RemoveImageBtn = await Button(self, f'{self.objectName()}RemoveImageBtn').init(
+        await super().init(on_click=lambda: self.choose_image(on_success, directory), **kwargs)
+        self.RemoveBtn = await Button(self, f'{self.objectName()}RemoveBtn').init(
             icon=Icon('x-circle.svg', (30, 30)), fixed_size=Size(30, 30),
-            on_click=lambda: Popup(self.core).display(message=f'Remove icon?', on_success=self.remove_icon)
+            on_click=Popup(self.core, qss=qss, message=f'Remove image?', on_success=self.remove_image).display
         )
-        self.RemoveImageBtn.move(self.width() - 30, 0)
-        self.RemoveImageBtn.setStyleSheet(f'''
-            #{self.objectName()}RemoveImageBtn {{background-color: transparent; border-radius: 14px;}}
-            #{self.objectName()}RemoveImageBtn:hover {{background-color: rgba(255, 255, 255, 0.3);}}
+        self.RemoveBtn.move(self.width() - 30, 0)
+        self.RemoveBtn.setStyleSheet(f'''
+            #{self.objectName()}RemoveBtn {{background-color: transparent; border-radius: 14px;}}
+            #{self.objectName()}RemoveBtn:hover {{background-color: rgba(255, 255, 255, 0.3);}}
         ''')
         return self
 
-    @property
-    def image_bytes_str(self) -> str | None:
-        return str(self.image_bytes) if self.image_bytes else None
-
-    def remove_icon(self):
+    def remove_image(self):
         super().setIcon(QIcon())
-        self.image_bytes = None
+        self.bytes = None
         with suppress(AttributeError):
-            self.RemoveImageBtn.setVisible(False)
+            self.RemoveBtn.setVisible(False)
+        print('cl')
 
     def setIcon(self, icon: QIcon) -> None:
-        self.image_bytes = Icon.bytes(icon, self.iconSize())
+        self.bytes = Icon.bytes(icon, self.iconSize())
         super().setIcon(icon)
         with suppress(AttributeError):
-            self.RemoveImageBtn.setVisible(True)
+            self.RemoveBtn.setVisible(True)
 
     def setDisabled(self, disabled: bool) -> None:
         with suppress(AttributeError):
-            self.RemoveImageBtn.setVisible(not disabled)
+            self.RemoveBtn.setVisible(not disabled)
         super().setDisabled(disabled)
 
     def setEnabled(self, enabled: bool) -> None:
         with suppress(AttributeError):
-            self.RemoveImageBtn.setVisible(enabled)
+            self.RemoveBtn.setVisible(enabled)
         super().setEnabled(enabled)
 
     @asyncSlot()
-    async def choose_image(self, slot: callable = lambda: None, directory: str = ''):
-        filepath, _ = QFileDialog.getOpenFileName(self, 'Choose image', directory, 'Images (*.jpg)')
-        if filepath:
+    async def choose_image(self, on_success: Event, directory: str = ''):
+        if filepath := await fileops.select_file(self, 'Choose image', directory, 'Images (*.jpg)'):
             with open(filepath, 'rb') as file:
                 self.setIcon(Icon(file.read()).icon)
-            slot()
+            on_success()

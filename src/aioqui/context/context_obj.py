@@ -1,24 +1,25 @@
-from PySide6.QtWidgets import (
-    QWidget, QPushButton, QLabel, QFrame, QLineEdit, QTextEdit, QPlainTextEdit, QStackedWidget, QComboBox, QSlider
-)
-from PySide6.QtCore import QObject, Qt
+from PySide6.QtCore import QObject, Qt, Signal
 from contextlib import suppress
 from loguru import logger
 import uuid
 
 from .contextapi import CONTEXT
-from ..types import QSS, Size, Event, Icon
-from ..enums import Alignment, SizePolicy
+from ..types import QSS, Size, Event, Icon, Parent
+from src.aioqui.types.enums import Alignment, SizePolicy
 
 
 class ContextObj:
+    _emmitable_event: Signal = Signal()
     __blacklist: dict[str, list[str]] = {}
 
-    def __init__(self, parent: QWidget = None, name: str = str(uuid.uuid4()), visible: bool = True):
+    def __init__(self: QObject, parent: Parent = None, name: str = str(uuid.uuid4()), visible: bool = True):
         if parent and name:
             self.setObjectName(name)
+            # make `self` accessible from `parent`
             self.__register(parent, name, self)
+            # make `parent` accessible from `self`
             self.__register(self, parent.objectName(), parent)
+            # make `self` accessible from global `CONTEXT`
             self.__register(CONTEXT, name, self)
 
             self.core = parent
@@ -36,7 +37,7 @@ class ContextObj:
         with suppress(Exception):
             self.setVisible(visible)
 
-    def __register(self, parent: object, name: str, child: QWidget) -> None:
+    def __register(self, parent: object, name: str, child: object) -> None:
         """
         Check if object not in `blacklist`, then register, otherwise show warning
         Check if object already registered, push its name to `blacklist` unregister and show warning, otherwise register
@@ -48,17 +49,16 @@ class ContextObj:
         key = parent.__class__.__name__
         self.__blacklist[key] = self.__blacklist.get(key, [])
         if name not in self.__blacklist[key]:
-            try:
-                getattr(parent, name)
+            if hasattr(parent, name):
                 delattr(parent, name)
                 self.__blacklist[key].append(name)
                 if CONTEXT.debug:
                     logger.warning(f'{name} already registered in {key}')
-            except AttributeError:
+            else:
                 setattr(parent, name, child)
 
     async def _apply(
-            self,
+            self: QObject,
             *,
             # Sizes
             policy: tuple[SizePolicy.SizePolicy, SizePolicy.SizePolicy] = None,
@@ -95,7 +95,8 @@ class ContextObj:
             text: str = None,
             placeholder: str = None,
             icon: Icon = None,
-            disabled: bool = None
+            disabled: bool = None,
+            qss: QSS = None,
     ) -> 'ContextObj':
         """
         :param policy:
@@ -119,11 +120,11 @@ class ContextObj:
             self.setSizePolicy(*policy)
             if vpolicy or hpolicy:
                 self._size_warning()
-        else:
+        elif vpolicy or hpolicy:
             policy = self.sizePolicy()
             if vpolicy:
                 policy.setVerticalPolicy(vpolicy)
-            elif hpolicy:
+            if hpolicy:
                 policy.setHorizontalPolicy(hpolicy)
             self.setSizePolicy(policy)
 
@@ -131,7 +132,7 @@ class ContextObj:
             self.setAlignment(alignment)
 
         if size:
-            self.resize(*size.size)
+            self.resize(*size)
             if width or height:
                 self._size_warning()
         elif width:
@@ -140,7 +141,7 @@ class ContextObj:
             self.resize(self.width(), height)
 
         if min_size:
-            self.setMinimumSize(*min_size.size)
+            self.setMinimumSize(*min_size)
             if min_width or min_height:
                 self._size_warning()
         elif min_width:
@@ -149,7 +150,7 @@ class ContextObj:
             self.setMinimumHeight(min_height)
 
         if max_size:
-            self.setMaximumSize(*max_size.size)
+            self.setMaximumSize(*max_size)
             if max_width or max_height:
                 self._size_warning()
         elif max_width:
@@ -158,7 +159,7 @@ class ContextObj:
             self.setMaximumHeight(max_height)
 
         if fixed_size:
-            self.setFixedSize(*fixed_size.size)
+            self.setFixedSize(*fixed_size)
             if fixed_width or fixed_height:
                 self._size_warning()
         elif fixed_width:
@@ -172,22 +173,28 @@ class ContextObj:
         :param on_resize:
         """
         if on_click:
-            if isinstance(self, QPushButton):
-                await self._connect_str_signal('clicked', on_click)
-            elif isinstance(self, (QLabel, QFrame)):
-                self.mousePressEvent = lambda event: self._emit(on_click)
+            if hasattr(self, 'clicked'):  # QPushButton, ...
+                await self._connect_event(self.clicked, on_click)
+            elif hasattr(self, 'mousePressEvent'):  # QLabel, QFrame, ...
+                self.mousePressEvent = lambda event: self.emit_event(on_click)
             else:
                 self._event_error('on_click')
 
         if on_change:
-            if isinstance(self, (QLineEdit, QTextEdit, QPlainTextEdit)):
-                await self._connect_str_signal('textChanged', on_change)
-            elif isinstance(self, QStackedWidget):
-                await self._connect_str_signal('currentChanged', on_change)
-            elif isinstance(self, QComboBox):
-                await self._connect_str_signal('currentTextChanged', on_change)
-            elif isinstance(self, QSlider):
-                await self._connect_str_signal('valueChanged', on_change)
+            if hasattr(self, 'textChanged'):  # QLineEdit, QTextEdit, QPlainTextEdit, ...
+                await self._connect_event(self.textChanged, on_change)
+            elif hasattr(self, 'currentChanged'):  # QStackedWidget, ...
+                await self._connect_event(self.currentChanged, on_change)
+            elif hasattr(self, 'currentTextChanged'):  # QComboBox, ...
+                await self._connect_event(self.currentTextChanged, on_change)
+            elif hasattr(self, 'valueChanged'):  # QSlider, ...
+                await self._connect_event(self.valueChanged, on_change)
+            elif hasattr(self, 'dateTimeChanged'):  # QDateTimeEdit, ...
+                await self._connect_event(self.dateTimeChanged, on_change)
+            elif hasattr(self, 'dateChanged'):  # QDateEdit, ...
+                await self._connect_event(self.dateChanged, on_change)
+            elif hasattr(self, 'timeChanged'):  # QTimeEdit, ...
+                await self._connect_event(self.timeChanged, on_change)
             else:
                 self._event_error('on_change')
 
@@ -210,48 +217,58 @@ class ContextObj:
         :param placeholder:
         :param icon:
         :param disabled:
+        :param qss:
         """
         if text:
-            self.setText(text)
+            if hasattr(self, 'setText'):
+                self.setText(text)
+            elif hasattr(self, 'setCurrentText'):
+                self.setCurrentText(text)
+            elif hasattr(self, 'setPlainText'):
+                self.setPlainText(text)
+
         if placeholder:
             self.setPlaceholderText(text)
+
         if icon:
-            if isinstance(self, QPushButton):
+            if hasattr(self, 'setIcon'):  # QPushButton, ...
                 self.setIcon(icon.icon)
                 self.setIconSize(icon.size)
-            elif isinstance(self, QLabel):
+            elif hasattr(self, 'setPixmap'):  # QLabel, ...
                 self.setPixmap(icon.icon.pixmap(icon.size))
+
         if disabled:
             self.setDisabled(disabled)
+
+        self.qss = qss
+
         return self
 
     def _size_warning(self: QObject) -> None:
         logger.warning(f'Review `{self.objectName()}.sized()` arguments')
 
-    async def _connect_str_signal(self: QObject, signal: str, event: Event):
-        signal = getattr(self, signal)
+    @staticmethod
+    async def _connect_event(signal: Signal, event: Event):
+        # signal.connect(slot) is faster that using getattr(self, signalName).connect(slot)
         with suppress(Exception):
             signal.disconnect()
         signal.connect(event)
 
-    @staticmethod
-    def _emit(event: Event) -> None:
-        # _emit created and used because event might be sync, async and async wrapped with asyncSlot
-        btn = QPushButton()
-        btn.setVisible(False)
-        btn.clicked.connect(event)
-        btn.click()
-        btn.deleteLater()
+    def emit_event(self, event: Event) -> None:  # created because event might be sync, async and wrapped with asyncSlot
+        with suppress(Exception):
+            self._emmitable_event.disconnect()
+        self._emmitable_event.connect(event)
+        self._emmitable_event.emit()
 
     def _event_error(self: QObject, event: str) -> None:
         logger.error(f'event `{event}` is not implemented for `{self.objectName()}\'s` type: {type(self)}')
 
     @property
-    def qss(self) -> str:
+    def qss(self: QObject) -> str:
         return self.styleSheet()
 
     @qss.setter
-    def qss(self, qss: QSS) -> None:
+    def qss(self: QObject, qss: QSS) -> None:
         if qss:
             if not isinstance(qss, str):
                 qss = ''.join(qss)

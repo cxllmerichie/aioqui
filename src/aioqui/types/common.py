@@ -1,7 +1,8 @@
 from PySide6.QtWidgets import QWidget
-from typing import Callable, Awaitable, Iterable, Optional
+from typing import Callable, Awaitable, Iterable, Optional, Any, Union
 
 
-Event = Callable[..., Awaitable]
-Parent = QWidget
-QSS = Optional[str | Iterable[str]]
+Parent: type = QWidget
+QSS: type = Optional[str | Iterable[str]]
+Event = Callable[..., Union[Awaitable, Any]]
+DefaultEvent = lambda: None

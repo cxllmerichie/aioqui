@@ -1,24 +1,17 @@
+from PySide6.QtWidgets import *
+import datetime
+
 from src.aioqui.widgets import *
 from src.aioqui.widgets.custom import *
 from src.aioqui.qasyncio import AsyncApp, asyncSlot
-from src.aioqui import CONTEXT, qasyncio
-
-
-css = f'''
-#CentralWidget {{
-    background-color: yellow;
-}}
-
-#ElideLeftLbl,
-#ElideRightLbl {{
-    background-color: blue;
-}} 
-'''
+from src.aioqui import CONTEXT
 
 
 class CentralWidget(Frame):
     def __init__(self, parent: Parent):
-        super().__init__(parent, self.__class__.__name__, qss=css)
+        super().__init__(parent, self.__class__.__name__, qss=(
+            qss.DateTime, qss.ImageButton, qss.Popup
+        ))
 
     async def init(self) -> 'CentralWidget':
         self.setLayout(await Layout.vertical().init(
@@ -42,14 +35,17 @@ class CentralWidget(Frame):
                     on_click=lambda: self.ErrorLabel.setText('Disappear with animation')
                 ),
                 await Input.line(self, 'LineEdit').init(),
-                await ErrorLabel(self).init()
+                await ErrorLabel(self).init(),
+                QDateEdit(datetime.date.today(), self),
+                QTimeEdit(self),
+                QDateTimeEdit(datetime.date.today(), self),
+                await DateTime(self, 'DateTime').init(),
+                await DateTime(self, 'DateTime').init(format='dd.MM.yyyy'),
+                await DateTime(self, 'DateTime').init(format='hh:mm'),
+                await ImageButton(self, 'ImageButton').init()
             ]
         ))
         return self
-
-    @asyncSlot()
-    async def test(self):
-        print('oh')
 
 
 class App(Window):

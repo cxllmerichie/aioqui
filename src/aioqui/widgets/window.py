@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QMainWindow
 
 from ..context import ContextObj
-from ..enums import WindowHint
+from ..types import WindowHint
 
 
 class Window(ContextObj, WindowHint, QMainWindow):

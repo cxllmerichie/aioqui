@@ -3,8 +3,7 @@ from PySide6.QtCore import QObject
 from typing import Iterable
 
 from ..context import ContextObj
-from ..enums import Alignment, Orientation
-from ..types import QSS, Parent
+from ..types import QSS, Parent, Alignment, Orientation
 
 
 class StackedWidget(ContextObj, Orientation, QStackedWidget):

@@ -2,8 +2,7 @@ from PySide6.QtWidgets import QSlider
 from PySide6.QtCore import Qt
 
 from ..context import ContextObj
-from ..enums import Orientation
-from ..types import Parent
+from ..types import Parent, Orientation
 
 
 class Slider(ContextObj, Orientation, QSlider):

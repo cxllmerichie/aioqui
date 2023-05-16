@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QTextEdit, QLineEdit, QPlainTextEdit
 
-from ...enums import EchoMode
+from ...types import EchoMode
 
 
 class InputExt(EchoMode):

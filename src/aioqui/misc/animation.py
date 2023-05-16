@@ -2,7 +2,6 @@ from PySide6.QtCore import QPropertyAnimation, Property, QObject
 from typing import Any, Callable
 
 from ..qasyncio import asyncSlot
-from ..context import ContextObj
 
 
 async def create(  # uncompleted
@@ -34,4 +33,4 @@ async def create(  # uncompleted
         obj.animation.start()
 
     setattr(obj, pname, Property(ptype, getter, setter))
-    return lambda: ContextObj._emit(animate)
+    return lambda: obj.emit_event(animate)

@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QSpacerItem
 
-from ..enums import SizePolicy
+from ..types import SizePolicy
 
 
 class Spacer(SizePolicy, QSpacerItem):

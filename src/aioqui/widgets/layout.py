@@ -2,10 +2,9 @@ from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout
 from typing import Union
 from abc import ABC
 
-from ..types import Parent
+from ..types import Parent, Alignment, Orientation
 from .extensions import LayoutExt
 from ..context import ContextObj
-from ..enums import Alignment, Orientation
 
 
 class VerticalLayout(ContextObj, LayoutExt, QVBoxLayout):

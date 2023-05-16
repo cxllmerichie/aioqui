@@ -26,10 +26,10 @@ class StateIconButton(Button):
             self.if_set_icon = if_set_icon
         if if_unset_icon:
             self.if_unset_icon = if_unset_icon
-        return await Button.init(self, on_click=lambda: self.__slot(pre_slot), **kwargs)
+        return await Button.init(self, on_click=lambda: self.__mainevent(pre_slot), **kwargs)
 
     @asyncSlot()
-    async def __slot(self, pre_slot: Callable[..., bool]) -> None:
+    async def __mainevent(self, pre_slot: Callable[..., bool]) -> None:
         # toggle to change state
         self.state = not self.state
         if not await pre_slot():

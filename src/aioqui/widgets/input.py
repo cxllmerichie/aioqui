@@ -1,9 +1,8 @@
 from PySide6.QtWidgets import QLineEdit, QTextEdit, QPlainTextEdit
 from abc import ABC
 
-from ..types import QSS, Parent
+from ..types import QSS, Parent, EchoMode
 from .extensions import InputExt
-from ..enums import EchoMode
 from ..context import ContextObj
 
 

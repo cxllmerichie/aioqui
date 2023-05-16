@@ -1,4 +1,4 @@
-from ...enums import Orientation
+from ...types import Orientation
 
 
 class SideMenuExt:

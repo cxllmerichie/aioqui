@@ -4,8 +4,7 @@ from typing import Iterable
 from .frame import Frame
 from .extensions import SplitterWidgetExt
 from ..context import ContextObj
-from ..enums import Orientation
-from ..types import QSS, Parent
+from ..types import QSS, Parent, Orientation
 
 
 class Splitter(ContextObj, Orientation, QSplitter):

@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QWidget, QLayoutItem, QSpacerItem
 from PySide6.QtCore import Qt, QObject
 from typing import Sequence, Iterable
 
-from ...enums import Alignment
+from ...types import Alignment
 
 
 class LayoutExt(Alignment):
