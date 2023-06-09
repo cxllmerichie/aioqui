@@ -4,6 +4,7 @@ from . import qss
 # exist normally, but added to keep context completed
 from .window import Window
 from .statusbar import StatusBar
+from .panel import Panel
 # standard frame-like
 from .widget import Widget
 from .frame import Frame

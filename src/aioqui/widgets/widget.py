@@ -1,11 +1,11 @@
 from PySide6.QtWidgets import QWidget, QLayout
 
 from ..context import ContextObj
-from ..types import QSS
+from ..types import QSS, Parent
 
 
 class Widget(ContextObj, QWidget):
-    def __init__(self, parent: QWidget, name: str, visible: bool = True, qss: QSS = None):
+    def __init__(self, parent: Parent, name: str, visible: bool = True, qss: QSS = None):
         QWidget.__init__(self, parent)
         ContextObj.__init__(self, parent, name, visible)
         self.qss = qss

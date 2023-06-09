@@ -12,7 +12,7 @@ from ..qss.popup import qss
 class ImageButton(Button):
     RemoveBtn: Button
 
-    bytes = None
+    bytes: bytes = None
 
     def __init__(self, parent: Parent, name: str = None, visible: bool = True):
         super().__init__(parent, name if name else self.__class__.__name__, visible)

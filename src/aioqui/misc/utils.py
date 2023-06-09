@@ -1,16 +1,4 @@
-from typing import Any, Optional, Iterable
-
-
-async def serializable(dictionary: dict[str, Any], exceptions: Iterable[str] = ()) -> dict[str, Any]:
-    def validate(value: Any):
-        if isinstance(value, bool):
-            return True
-        elif value is None:
-            return False
-        elif isinstance(value, str):
-            return len(value)
-
-    return {key: value for key, value in dictionary.items() if validate(value) or key in exceptions}
+from typing import Any, Optional
 
 
 async def find(

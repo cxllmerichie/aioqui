@@ -9,7 +9,13 @@ class CentralWidget(Frame):
         super().__init__(parent, self.__class__.__name__)
 
     async def init(self) -> 'CentralWidget':
-
+        self.setLayout(await Layout.vertical(self).init(
+            items=[
+                await DateTime(self, 'DateTime').init(
+                    
+                )
+            ]
+        ))
         return self
 
 

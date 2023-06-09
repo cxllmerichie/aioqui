@@ -6,6 +6,8 @@ from ..types import Parent, QSS
 
 
 class DateTime(ContextObj, QDateTimeEdit):
+    defstrf: str = '%d.%m.%Y'
+
     def __init__(self, parent: Parent, name: str, visible: bool = True, qss: QSS = None,
                  calendar: bool = True):
         QDateTimeEdit.__init__(self, datetime.now(), parent, calendarPopup=calendar)

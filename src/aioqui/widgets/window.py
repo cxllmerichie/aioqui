@@ -16,3 +16,7 @@ class Window(ContextObj, WindowHint, QMainWindow):
             **kwargs
     ) -> 'Window':
         return await self._apply(**kwargs)
+
+    def setPanel(self, panel: 'QObject'):
+        self.setWindowFlag(Window.Frameless)
+        self.setMenuBar(panel)
