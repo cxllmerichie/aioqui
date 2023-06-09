@@ -23,7 +23,7 @@ class TotalButton(Button):
             margins=(10, 5, 10, 5), spacing=10,
             items=[
                 IconBtn := await Button(self, f'{self.objectName()}IconBtn').init(
-                    icon=icon, disabled=True, fixed_size=Size(icon.size.width(), icon.size.height())
+                    icon=icon, disabled=True, fix_size=Size(icon.size.width(), icon.size.height())
                 ), Layout.Left,
                 TextLbl := await Label(self, f'{self.objectName()}TextLbl').init(
                     text=text, hpolicy=Label.Expanding, elide=Label.ElideRight

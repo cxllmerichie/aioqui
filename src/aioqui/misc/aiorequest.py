@@ -1,24 +1,11 @@
-from typing import Any, Callable
+from typing import Any
 import aiohttp
 import ujson
+import ast
 
 
 class Request:
-    __base: Callable[..., str] | str = None
-
-    @property
-    async def baseurl(self) -> str | None:
-        if isinstance(self.__base, str):
-            return self.__base
-        if self.__base.__class__.__name__ == 'function':
-            url = self.__base()
-            if url.__class__.__name__ == 'coroutine':
-                return await url
-            return url
-
-    @baseurl.setter
-    def baseurl(self, base_url: Callable[..., str] | str):
-        self.__base = base_url
+    baseurl: str
 
     async def __call__(
             self,
@@ -28,7 +15,7 @@ class Request:
             **kwargs
     ) -> Any:
         # convert params values to str
-        if params := kwargs['params']:
+        if params := kwargs.get('params'):
             for key, value in params.items():
                 kwargs['params'][key] = str(value)
         # assure that `method` supports
@@ -43,13 +30,12 @@ class Request:
                     data=kwargs['data']
             ) as response:
                 try:
-                    return await response.json()
+                    json = await response.json()
+                    if evaluate:
+                        json = self.__evaluate(json)
+                    return json
                 except Exception:
                     raise ValueError(await response.text())
-
-    async def __evaluate(self, response):
-        # evaluate str repr of uuid to uuid, "b''" to b'' and so on
-        return response
 
     async def get(
             self,
@@ -100,7 +86,7 @@ class Request:
         return await self('delete', url, params=params, headers=headers, body=body, data=data, nobase=nobase)
 
     async def __url(self, url: str, nobase: bool = False):
-        if not (base := await self.baseurl) or nobase:
+        if not (base := self.baseurl) or nobase:
             return url
         if base.endswith('/') and url.startswith('/'):
             return base[:-1] + url
@@ -110,6 +96,21 @@ class Request:
             return base + url
         elif not base.endswith('/') and not url.startswith('/'):
             return f'{base}/{url}'
+
+    async def __evaluate(self, json: dict[str, Any]):
+        # evaluate str repr of uuid to uuid, "b''" to b'' and so on
+        def evaluate(value: bytes) -> Any:
+            try:
+                return ast.literal_eval(value.decode())
+            except ValueError:
+                return ast.literal_eval(f'\'{value.decode()}\'')
+            except SyntaxError:
+                return value.decode()
+            except AttributeError:
+                return None
+        for key, value in json:
+            json[key] = evaluate(value)
+        return json
 
 
 request = Request()

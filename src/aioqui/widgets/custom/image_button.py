@@ -24,7 +24,7 @@ class ImageButton(Button):
     ) -> 'ImageButton':
         await super().init(on_click=lambda: self.choose_image(on_success, directory), **kwargs)
         self.RemoveBtn = await Button(self, f'{self.objectName()}RemoveBtn').init(
-            icon=Icon('x-circle.svg', (30, 30)), fixed_size=Size(30, 30),
+            icon=Icon('x-circle.svg', (30, 30)), fix_size=Size(30, 30),
             on_click=Popup(self.core, qss=qss, message=f'Remove image?', on_success=self.remove_image).display
         )
         self.RemoveBtn.move(self.width() - 30, 0)
