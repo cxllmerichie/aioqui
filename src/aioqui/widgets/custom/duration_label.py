@@ -3,22 +3,26 @@ from time import sleep
 
 from ...misc import ConditionalThreadQueue
 from ..label import Label
-from ...qasyncio import asyncSlot
+from ...asynq import asyncSlot
 from ...types import Parent
 
 
-class ErrorLabel(Label):
-    __duration: float = 0.5
+class DurationLabel(Label):
     __ctq: ConditionalThreadQueue = ConditionalThreadQueue()
+    __duration: float = 0.5
+    __rgb: tuple[int, int, int] = (255, 0, 0)
+    __oprng: tuple[float, float] = (0.0, 1.0)
 
     def __init__(self, parent: Parent, name: str = None, visible: bool = True):
         super().__init__(parent, name if name else self.__class__.__name__, visible)
 
     async def init(
             self, *,
-            _=None,
+            rgb: tuple[int, int, int] = (255, 0, 0), oprng: tuple[float, float] = (0.0, 1.0),
             **kwargs
-    ) -> 'ErrorLabel':
+    ) -> 'DurationLabel':
+        self.__rgb = rgb
+        self.__oprng = oprng
         return await Label.init(self, **kwargs)
 
     def setText(self, text: str, delay: float = 2, duration: int = 0.5) -> None:
@@ -45,8 +49,8 @@ class ErrorLabel(Label):
     async def reduce(self):
         self.animation = QPropertyAnimation(self, b"_opacity")
         self.animation.setDuration(int(self.__duration * 1000))
-        self.animation.setStartValue(1.0)
-        self.animation.setEndValue(0.0)
+        self.animation.setStartValue(self.__oprng[0])
+        self.animation.setEndValue(self.__oprng[1])
         self.animation.start()
 
     def _get_opacity(self):
@@ -54,7 +58,7 @@ class ErrorLabel(Label):
 
     def _set_opacity(self, opacity: float):
         self.__opacity = opacity
-        self.setStyleSheet(f'color: rgba(255, 0, 0, {opacity});')
+        self.setStyleSheet(f'color: rgba({self.__rgb[0]}, {self.__rgb[1]}, {self.__rgb[2]}, {opacity});')
 
     __opacity: float = 1
     _opacity: Property = Property(float, _get_opacity, _set_opacity)

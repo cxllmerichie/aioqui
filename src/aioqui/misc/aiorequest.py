@@ -20,7 +20,13 @@ class Request:
     def baseurl(self, base_url: Callable[..., str] | str):
         self.__base = base_url
 
-    async def __call__(self, method: str, url: str, **kwargs) -> Any:
+    async def __call__(
+            self,
+            method: str, url: str,
+            *,
+            evaluate: bool = False,
+            **kwargs
+    ) -> Any:
         # convert params values to str
         if params := kwargs['params']:
             for key, value in params.items():
@@ -40,6 +46,10 @@ class Request:
                     return await response.json()
                 except Exception:
                     raise ValueError(await response.text())
+
+    async def __evaluate(self, response):
+        # evaluate str repr of uuid to uuid, "b''" to b'' and so on
+        return response
 
     async def get(
             self,

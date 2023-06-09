@@ -4,12 +4,21 @@ from loguru import logger
 import uuid
 
 from .contextapi import CONTEXT
-from ..types import QSS, Size, Event, Icon, Parent
-from src.aioqui.types.enums import Alignment, SizePolicy
+from ..types import QSS, Size, Event, Icon, Parent, Alignment, SizePolicy
 
 
 class ContextObj:
-    _emmitable_event: Signal = Signal()
+    class Emitter(QObject):
+        _event: Signal = Signal()
+
+        def _emit(self, event):
+            with suppress(Exception):
+                self._event.disconnect()
+            self._event.connect(event)
+            self._event.emit()
+
+    emitter = Emitter()
+
     __blacklist: dict[str, list[str]] = {}
 
     def __init__(self: QObject, parent: Parent = None, name: str = str(uuid.uuid4()), visible: bool = True):
@@ -249,16 +258,13 @@ class ContextObj:
 
     @staticmethod
     async def _connect_event(signal: Signal, event: Event):
-        # signal.connect(slot) is faster that using getattr(self, signalName).connect(slot)
+        # signal.connect(slot) is faster than using getattr(self, signalName).connect(slot)
         with suppress(Exception):
             signal.disconnect()
         signal.connect(event)
 
     def emit_event(self, event: Event) -> None:  # created because event might be sync, async and wrapped with asyncSlot
-        with suppress(Exception):
-            self._emmitable_event.disconnect()
-        self._emmitable_event.connect(event)
-        self._emmitable_event.emit()
+        self.emitter._emit(event)
 
     def _event_error(self: QObject, event: str) -> None:
         logger.error(f'event `{event}` is not implemented for `{self.objectName()}\'s` type: {type(self)}')

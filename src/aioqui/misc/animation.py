@@ -1,7 +1,7 @@
 from PySide6.QtCore import QPropertyAnimation, Property, QObject
 from typing import Any, Callable
 
-from ..qasyncio import asyncSlot
+from ..asynq import asyncSlot
 
 
 async def create(  # uncompleted

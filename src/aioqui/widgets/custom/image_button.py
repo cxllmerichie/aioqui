@@ -4,7 +4,7 @@ from contextlib import suppress
 from ..button import Button
 from .popup import Popup
 from ...types import Icon, Size, Parent, Event, DefaultEvent
-from ...qasyncio import asyncSlot
+from ...asynq import asyncSlot
 from ...misc import fileops
 from ..qss.popup import qss
 

@@ -6,7 +6,7 @@ from ..layout import Layout
 from ...types import Icon, Size
 
 
-class MenuButton(Button):
+class TotalButton(Button):
     IconBtn: Button
     TextLbl: Label
     TotalLbl: Label
@@ -16,9 +16,9 @@ class MenuButton(Button):
 
     async def init(
             self, *,
-            icon: Icon, text: str, total: int = 0,
+            icon: Icon = Icon.default(), text: str = '', total: int = 0,
             **kwargs
-    ) -> 'MenuButton':
+    ) -> 'TotalButton':
         self.setLayout(await Layout.horizontal().init(
             margins=(10, 5, 10, 5), spacing=10,
             items=[

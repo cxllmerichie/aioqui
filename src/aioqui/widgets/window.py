@@ -1,15 +1,14 @@
 from PySide6.QtWidgets import QMainWindow
 
 from ..context import ContextObj
-from ..types import WindowHint
+from ..types import WindowHint, QSS
 
 
 class Window(ContextObj, WindowHint, QMainWindow):
-    def __init__(self, name: str, stylesheet: str = None):
+    def __init__(self, name: str, qss: QSS = None):
         QMainWindow.__init__(self)
         self.setObjectName(name)
-        if stylesheet:
-            self.setStyleSheet(stylesheet)
+        self.qss = qss
 
     async def init(
             self, *,

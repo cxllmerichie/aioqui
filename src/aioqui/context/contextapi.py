@@ -1,5 +1,4 @@
 from PySide6.QtCore import QSettings as _QSettings
-from loguru import logger
 import socket as _socket
 from typing import Any
 

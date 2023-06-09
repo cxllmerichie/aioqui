@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aioqui"
-version = "2.0.1"
+version = "2.0.2"
 authors = [
     { name="cxllmerichie", email="cxllmerichie@gmail.com" },
 ]
@@ -21,6 +21,8 @@ classifiers = [
 
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: 3.10",
+
+    "Environment :: X11 Applications :: Qt",
 
     "Natural Language :: English",
 

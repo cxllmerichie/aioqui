@@ -96,3 +96,7 @@ class Icon:
         image_bytes = buffer.data()
         buffer.close()
         return image_bytes
+
+    @classmethod
+    def default(cls) -> 'Icon':
+        return Icon(instance=QIcon())
