@@ -17,16 +17,16 @@ class ScrollArea(ContextObj, ScrollPolicy, Orientation, QScrollArea):
     async def init(
             self, *,
             orientation: Orientation.Orientation,
-            hpolicy: ScrollPolicy.ScrollPolicy = ScrollPolicy.WhenNeeded,
-            vpolicy: ScrollPolicy.ScrollPolicy = ScrollPolicy.WhenNeeded,
+            hspolicy: ScrollPolicy.ScrollPolicy = ScrollPolicy.WhenNeeded,
+            vspolicy: ScrollPolicy.ScrollPolicy = ScrollPolicy.WhenNeeded,
 
             margins: tuple[int, ...] = (0, 0, 0, 0), spacing: int = 0, alignment: Layout.Alignment = None,
             items: Sequence[QObject] = (),
 
             **kwargs
     ) -> 'ScrollArea':
-        self.setHorizontalScrollBarPolicy(hpolicy)
-        self.setVerticalScrollBarPolicy(vpolicy)
+        self.setHorizontalScrollBarPolicy(hspolicy)
+        self.setVerticalScrollBarPolicy(vspolicy)
         self.setWidgetResizable(True)
         frame = Frame(self, f'{self.objectName()}Widget')
         self.setWidget(await frame.init(

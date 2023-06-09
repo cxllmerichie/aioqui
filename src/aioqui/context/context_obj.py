@@ -90,9 +90,9 @@ class ContextObj:
             max_width: int = None,
             max_height: int = None,
 
-            fixed_size: Size = None,
-            fixed_width: int = None,
-            fixed_height: int = None,
+            fix_size: Size = None,
+            fix_width: int = None,
+            fix_height: int = None,
 
             # Events
             on_click: Event = None,
@@ -105,7 +105,6 @@ class ContextObj:
             placeholder: str = None,
             icon: Icon = None,
             disabled: bool = None,
-            qss: QSS = None,
     ) -> 'ContextObj':
         """
         :param policy:
@@ -121,9 +120,9 @@ class ContextObj:
         :param max_size:
         :param max_width:
         :param max_height:
-        :param fixed_size:
-        :param fixed_width:
-        :param fixed_height:
+        :param fix_size:
+        :param fix_width:
+        :param fix_height:
         """
         if policy:
             self.setSizePolicy(*policy)
@@ -167,14 +166,14 @@ class ContextObj:
         elif max_height:
             self.setMaximumHeight(max_height)
 
-        if fixed_size:
-            self.setFixedSize(*fixed_size)
-            if fixed_width or fixed_height:
+        if fix_size:
+            self.setFixedSize(*fix_size)
+            if fix_width or fix_height:
                 self._size_warning()
-        elif fixed_width:
-            self.setFixedWidth(fixed_width)
-        elif fixed_height:
-            self.setFixedHeight(fixed_height)
+        elif fix_width:
+            self.setFixedWidth(fix_width)
+        elif fix_height:
+            self.setFixedHeight(fix_height)
         """
         :param on_click:
         :param on_change:
@@ -248,8 +247,6 @@ class ContextObj:
 
         if disabled:
             self.setDisabled(disabled)
-
-        self.qss = qss
 
         return self
 

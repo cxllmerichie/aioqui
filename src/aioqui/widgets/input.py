@@ -39,7 +39,7 @@ class ReachInput(ContextObj, InputExt, QTextEdit):
 
     async def init(
             self, *,
-            _,
+            _=...,
             **kwargs
     ) -> 'ReachInput':
         return await self._apply(**kwargs)
@@ -53,7 +53,7 @@ class PlainInput(ContextObj, InputExt, QPlainTextEdit):
 
     async def init(
             self, *,
-            _,
+            _=...,
             **kwargs
     ) -> 'PlainInput':
         return await self._apply(**kwargs)
