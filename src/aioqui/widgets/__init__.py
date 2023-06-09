@@ -1,6 +1,5 @@
 # to be used together with other imports
-from ..types import Parent
-from . import qss
+from .custom import qss
 # exist normally, but added to keep context completed
 from .window import Window
 from .statusbar import StatusBar

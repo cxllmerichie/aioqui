@@ -6,7 +6,7 @@ from .popup import Popup
 from ...types import Icon, Size, Parent, Event, DefaultEvent
 from ...asynq import asyncSlot
 from ...misc import fileops
-from ..qss.popup import qss
+from . import qss
 
 
 class ImageButton(Button):
