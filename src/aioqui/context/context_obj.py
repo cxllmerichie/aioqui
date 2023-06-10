@@ -8,16 +8,7 @@ from ..types import QSS, Size, Event, Icon, Parent, Alignment, SizePolicy
 
 
 class ContextObj:
-    class Emitter(QObject):
-        _event: Signal = Signal()
-
-        def _emit(self, event):
-            with suppress(Exception):
-                self._event.disconnect()
-            self._event.connect(event)
-            self._event.emit()
-
-    emitter = Emitter()
+    _event: Signal = Signal()
 
     __blacklist: dict[str, list[str]] = {}
 
@@ -265,8 +256,11 @@ class ContextObj:
             signal.disconnect()
         signal.connect(event)
 
-    def emit_event(self, event: Event) -> None:  # created because event might be sync, async and wrapped with asyncSlot
-        self.emitter._emit(event)
+    def _emit(self, event: Event) -> None:  # created because event might be sync, async and wrapped with asyncSlot
+        with suppress(Exception):
+            self._event.disconnect()
+        self._event.connect(event)
+        self._event.emit()
 
     def _event_error(self: QObject, event: str) -> None:
         logger.error(f'event `{event}` is not implemented for `{self.objectName()}\'s` type: {type(self)}')

@@ -1,23 +1,30 @@
 from src.aioqui.widgets import *
 from src.aioqui.asynq import asyncSlot, run
 
-from src.aioqui import widgets
-
 
 class CentralWidget(Frame):
     def __init__(self, parent: Parent):
         super().__init__(parent, self.__class__.__name__)
 
     async def init(self) -> 'CentralWidget':
+        from src.aioqui.widgets.custom import DurationLabel
         self.setLayout(await Layout.vertical(self).init(
             margins=(50, 50, 50, 50),
             items=[
-                await DateTime(self, 'DateTime').init(
+                await Button(self, 'Btn').init(
+                    on_click=lambda: self.Lbl.setText('Temporary text')
+                ),
+                await DurationLabel(self, 'Lbl').init(
 
+                ),
+                await Input.line(self, 'LInp').init(
+                    placeholder='hello there'
+                ),
+                await Input.line(self, 'LInp').init(
+                    placeholder='hello there'
                 )
             ]
         ))
-        print(self.DateTime.dateTime())
         return self
 
 

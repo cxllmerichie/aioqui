@@ -11,18 +11,16 @@ class DurationLabel(Label):
     __ctq: ConditionalThreadQueue = ConditionalThreadQueue()
     __duration: float = 0.5
     __rgb: tuple[int, int, int] = (255, 0, 0)
-    __oprng: tuple[float, float] = (0.0, 1.0)
 
     def __init__(self, parent: Parent, name: str = None, visible: bool = True):
         super().__init__(parent, name if name else self.__class__.__name__, visible)
 
     async def init(
             self, *,
-            rgb: tuple[int, int, int] = (255, 0, 0), oprng: tuple[float, float] = (0.0, 1.0),
+            rgb: tuple[int, int, int] = (255, 0, 0),
             **kwargs
     ) -> 'DurationLabel':
         self.__rgb = rgb
-        self.__oprng = oprng
         return await Label.init(self, **kwargs)
 
     def setText(self, text: str, delay: float = 2, duration: int = 0.5) -> None:
@@ -40,7 +38,7 @@ class DurationLabel(Label):
             sleep(delay)
 
         def post():
-            self.emit_event(self.reduce)
+            self._emit(self.reduce)
 
         self.__duration = duration
         self.__ctq.new(pre, post)
@@ -49,8 +47,8 @@ class DurationLabel(Label):
     async def reduce(self):
         self.animation = QPropertyAnimation(self, b"_opacity")
         self.animation.setDuration(int(self.__duration * 1000))
-        self.animation.setStartValue(self.__oprng[0])
-        self.animation.setEndValue(self.__oprng[1])
+        self.animation.setStartValue(1.0)
+        self.animation.setEndValue(0.0)
         self.animation.start()
 
     def _get_opacity(self):

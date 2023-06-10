@@ -8,13 +8,10 @@ from ...types import Alignment
 class LayoutExt(Alignment):
     async def init(
             self, *,
-            margins: tuple[int, int, int, int] = (0, 0, 0, 0), spacing: int = 0,  # do not remove, since default
             items: Sequence[QObject] = (),
             **kwargs
     ) -> 'LayoutExt':
-        self.setContentMargins(*margins)
-        self.setSpacing(spacing)
-        # add items according to the rule
+        # add items according to the rule item=`widget` or items=`widget, alignment` (not a tuple, but sequentially)
         i = 0
         while i < len(items):
             if i + 1 < len(items) and isinstance(items[i + 1], (Qt.AlignmentFlag, Qt.Alignment)):
@@ -23,6 +20,11 @@ class LayoutExt(Alignment):
             else:
                 self.add(items[i])
             i += 1
+        # set defaults through kwargs if values are not specified
+        if not kwargs.get('margins'):
+            kwargs['margins'] = (0, 0, 0, 0)
+        if not kwargs.get('spacing'):
+            kwargs['spacing'] = 0
         return await self._render(**kwargs)  # from ContextObj
 
     def add(self, obj: QObject, alignment: Alignment.Alignment = None) -> QObject:

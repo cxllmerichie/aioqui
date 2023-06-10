@@ -63,7 +63,7 @@ class Popup(LogicButton, Frame):
 
     @asyncSlot()
     async def __mainevent(self, event: Event):
-        self.emit_event(event)
+        self._emit(event)
         self.deleteLater()
 
     def resizeEvent(self, event: QResizeEvent) -> None:
