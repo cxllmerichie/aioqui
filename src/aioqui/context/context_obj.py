@@ -66,7 +66,7 @@ class ContextObj:
             else:
                 setattr(parent, name, child)
 
-    async def _apply(
+    async def _render(
             self: QObject,
             *,
             # Sizes
@@ -74,9 +74,10 @@ class ContextObj:
             vpolicy: SizePolicy.SizePolicy = None,
             hpolicy: SizePolicy.SizePolicy = None,
 
-            # margins: ? = ?,
+            margins: tuple[int, int, int, int] = None,
             # padding: ? = ?,
             alignment: Alignment.Alignment = None,
+            spacing: int = None,
 
             size: Size = None,
             width: int = None,
@@ -136,8 +137,12 @@ class ContextObj:
                 policy.setHorizontalPolicy(hpolicy)
             self.setSizePolicy(policy)
 
+        if margins:
+            self.setContentsMargins(*margins)
         if alignment:
             self.setAlignment(alignment)
+        if spacing:
+            self.setSpacing(spacing)
 
         if size:
             self.resize(*size)

@@ -23,7 +23,7 @@ class StackedWidget(ContextObj, Orientation, QStackedWidget):
         self.layout().setAlignment(alignment)
         for item in items:
             self.addWidget(item)
-        return await self._apply(**kwargs)
+        return await self._render(**kwargs)
 
     def setCurrentIndex(self, index: int) -> None:
         super().setCurrentIndex(index + 1)

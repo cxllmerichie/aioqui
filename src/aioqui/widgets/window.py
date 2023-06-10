@@ -15,7 +15,7 @@ class Window(ContextObj, WindowHint, QMainWindow):
             _=...,
             **kwargs
     ) -> 'Window':
-        return await self._apply(**kwargs)
+        return await self._render(**kwargs)
 
     def setPanel(self, panel: 'QObject'):
         self.setWindowFlag(Window.Frameless)

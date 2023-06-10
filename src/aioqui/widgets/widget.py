@@ -17,4 +17,4 @@ class Widget(ContextObj, QWidget):
     ) -> 'Widget':
         if layout:
             self.setLayout(layout)
-        return await self._apply(**kwargs)
+        return await self._render(**kwargs)

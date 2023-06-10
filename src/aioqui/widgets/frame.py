@@ -19,4 +19,4 @@ class Frame(ContextObj, QFrame):
             self.setFrameStyle(style)
         if layout:
             self.setLayout(layout)
-        return await self._apply(**kwargs)
+        return await self._render(**kwargs)

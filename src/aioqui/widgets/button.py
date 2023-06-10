@@ -11,8 +11,7 @@ class Button(ContextObj, QPushButton):
         self.qss = qss
 
     async def init(
-            self, *,
-            _=...,
+            self,
             **kwargs
     ) -> 'Button':
-        return await self._apply(**kwargs)
+        return await self._render(**kwargs)

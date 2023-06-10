@@ -30,7 +30,7 @@ class Selector(ContextObj, QComboBox):
                 self.addItem(*item.params)
             elif isinstance(item, str):
                 self.addItem(item)
-        return await self._apply(**kwargs)
+        return await self._render(**kwargs)
 
     def setCurrentText(self, text: Any) -> None:
         super().setCurrentText(str(text))

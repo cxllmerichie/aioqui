@@ -19,7 +19,7 @@ class LineInput(ContextObj, InputExt, QLineEdit):
     ) -> 'LineInput':
         if hidden:
             self.hide_echo()
-        return await self._apply(**kwargs)
+        return await self._render(**kwargs)
 
     def hide_echo(self):
         self.setEchoMode(EchoMode.Hidden)
@@ -38,11 +38,10 @@ class ReachInput(ContextObj, InputExt, QTextEdit):
         self.qss = qss
 
     async def init(
-            self, *,
-            _=...,
+            self,
             **kwargs
     ) -> 'ReachInput':
-        return await self._apply(**kwargs)
+        return await self._render(**kwargs)
 
 
 class PlainInput(ContextObj, InputExt, QPlainTextEdit):
@@ -52,11 +51,10 @@ class PlainInput(ContextObj, InputExt, QPlainTextEdit):
         self.qss = qss
 
     async def init(
-            self, *,
-            _=...,
+            self,
             **kwargs
     ) -> 'PlainInput':
-        return await self._apply(**kwargs)
+        return await self._render(**kwargs)
 
 
 class Input(ABC, EchoMode):

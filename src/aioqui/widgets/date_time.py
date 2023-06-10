@@ -23,7 +23,7 @@ class DateTime(ContextObj, QDateTimeEdit):
             **kwargs
     ) -> 'DateTime':
         self.setDisplayFormat(format)
-        return await self._apply(**kwargs)
+        return await self._render(**kwargs)
 
     def dateTime(self, tz: bool = False) -> datetime:
         dt = super().dateTime().toPython()

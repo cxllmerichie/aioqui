@@ -10,6 +10,7 @@ class CentralWidget(Frame):
 
     async def init(self) -> 'CentralWidget':
         self.setLayout(await Layout.vertical(self).init(
+            margins=(50, 50, 50, 50),
             items=[
                 await DateTime(self, 'DateTime').init(
 

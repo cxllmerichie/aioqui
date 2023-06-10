@@ -21,7 +21,7 @@ class Label(ContextObj, Alignment, SizePolicy, ElideMode, QLabel):
     ) -> 'Label':
         self.__elide_mode = elide
         self.setWordWrap(wrap)
-        return await self._apply(**kwargs)
+        return await self._render(**kwargs)
 
     def paintEvent(self, event: QPaintEvent):
         if self.elided():

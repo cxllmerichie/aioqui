@@ -34,7 +34,7 @@ class ScrollArea(ContextObj, ScrollPolicy, Orientation, QScrollArea):
                 margins=margins, spacing=spacing, alignment=alignment, items=items
             )
         ))
-        return await self._apply(**kwargs)
+        return await self._render(**kwargs)
 
     def addWidget(self, widget: Parent) -> None:
         self.widget().layout().addWidget(widget)

@@ -26,14 +26,14 @@ class Splitter(ContextObj, Orientation, QSplitter):
 
     async def init(
             self, *,
-            items: Iterable[Widget] = (),
+            items: Iterable['Splitter.Widget'] = (),
             **kwargs
     ) -> 'Splitter':
         for item in items:
             self.addWidget(item)
-        return await self._apply(**kwargs)
+        return await self._render(**kwargs)
 
-    def addWidget(self, widget: Widget) -> None:
+    def addWidget(self, widget: 'Splitter.Widget') -> None:
         super().addWidget(widget)
         widget.splitter = self
         widget.orientation = self.orientation()
