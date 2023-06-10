@@ -17,14 +17,15 @@ class CentralWidget(Frame):
                 await DurationLabel(self, 'Lbl').init(
 
                 ),
-                await Input.line(self, 'LInp').init(
+                await Input.line(self, 'LInp1').init(
                     placeholder='hello there'
                 ),
-                await Input.line(self, 'LInp').init(
+                await Input.line(self, 'LInp2').init(
                     placeholder='hello there'
                 )
             ]
         ))
+        self.LInp1.setPlaceholderText('color: black;')
         return self
 
 

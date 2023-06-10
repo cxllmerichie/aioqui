@@ -20,3 +20,6 @@ class Window(ContextObj, WindowHint, QMainWindow):
     def setPanel(self, panel: 'QObject'):
         self.setWindowFlag(Window.Frameless)
         self.setMenuBar(panel)
+
+    def showToggle(self):
+        self.showNormal() if self.isMaximized() else self.showMaximized()

@@ -232,7 +232,7 @@ class ContextObj:
                 self.setPlainText(text)
 
         if placeholder:
-            self.setPlaceholderText(text)
+            self.setPlaceholderText(placeholder)
 
         if icon:
             if hasattr(self, 'setIcon'):  # QPushButton, ...
