@@ -8,9 +8,13 @@ from ...types import Alignment
 class LayoutExt(Alignment):
     async def init(
             self, *,
+            margins: tuple[int, int, int, int] = (0, 0, 0, 0), spacing: int = 0,  # do not remove, since default
             items: Sequence[QObject] = (),
             **kwargs
     ) -> 'LayoutExt':
+        self.setContentMargins(*margins)
+        self.setSpacing(spacing)
+        # add items according to the rule
         i = 0
         while i < len(items):
             if i + 1 < len(items) and isinstance(items[i + 1], (Qt.AlignmentFlag, Qt.Alignment)):
