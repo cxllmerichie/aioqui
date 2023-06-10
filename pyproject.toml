@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aioqui"
-version = "2.0.6"
+version = "2.0.8"
 authors = [
     { name="cxllmerichie", email="cxllmerichie@gmail.com" },
 ]
@@ -41,6 +41,7 @@ dependencies=[
 
 #    "python-dateutil~=2.8.2",
 #    "aiohttp~=3.8.4",
+
 #    "ujson~=5.7.0",
 #    "aiodns~=3.0.0",
 #    "cchardet~=2.1.7",

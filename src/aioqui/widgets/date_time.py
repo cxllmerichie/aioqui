@@ -1,15 +1,18 @@
 from PySide6.QtWidgets import QDateTimeEdit
-from datetime import datetime
+from datetime import datetime, timezone
 
 from ..context import ContextObj
 from ..types import Parent, QSS
 
 
 class DateTime(ContextObj, QDateTimeEdit):
-    defstrf: str = '%d.%m.%Y'
+    format: str = '%d.%m.%Y'
 
-    def __init__(self, parent: Parent, name: str, visible: bool = True, qss: QSS = None,
-                 calendar: bool = True):
+    def __init__(
+            self, parent: Parent, name: str, visible: bool = True, qss: QSS = None,
+            *,
+            calendar: bool = True
+    ):
         QDateTimeEdit.__init__(self, datetime.now(), parent, calendarPopup=calendar)
         ContextObj.__init__(self, parent, name, visible)
         self.qss = qss
@@ -21,3 +24,8 @@ class DateTime(ContextObj, QDateTimeEdit):
     ) -> 'DateTime':
         self.setDisplayFormat(format)
         return await self._apply(**kwargs)
+
+    def dateTime(self, tz: bool = False) -> datetime:
+        dt = super().dateTime().toPython()
+        dt.replace(tzinfo=timezone.utc if tz else None)
+        return dt

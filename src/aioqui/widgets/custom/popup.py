@@ -2,14 +2,22 @@ from PySide6.QtGui import QResizeEvent
 from qasync import asyncSlot
 from typing import Iterable
 
-from .. import Frame, Layout, Button, Label
+from ..frame import Frame
+from ..layout import Layout
+from ..button import Button
+from ..label import Label
 from ...types import Parent, Event, DefaultEvent, QSS, LogicButton
 
 
 class Popup(LogicButton, Frame):
-    def __init__(self, parent: Parent, name: str = None, qss: QSS = None, *,
-                 message: str = '', buttons: Iterable[LogicButton] = (LogicButton.YES, LogicButton.NO),
-                 on_success: Event = DefaultEvent, on_failure: Event = DefaultEvent):
+    def __init__(
+            self, parent: Parent, name: str = None, qss: QSS = None,
+            *,
+            message: str = '',
+            buttons: Iterable[LogicButton] = (LogicButton.YES, LogicButton.NO),
+            on_success: Event = DefaultEvent,
+            on_failure: Event = DefaultEvent
+    ):
         super().__init__(parent, name if name else self.__class__.__name__, qss)
         self.message: str = message
         self.buttons: Iterable[LogicButton] = buttons

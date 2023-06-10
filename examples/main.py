@@ -12,10 +12,11 @@ class CentralWidget(Frame):
         self.setLayout(await Layout.vertical(self).init(
             items=[
                 await DateTime(self, 'DateTime').init(
-                    
+
                 )
             ]
         ))
+        print(self.DateTime.dateTime())
         return self
 
 
