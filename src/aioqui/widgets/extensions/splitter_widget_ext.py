@@ -7,7 +7,7 @@ class SplitterWidgetExt(Orientation):
     splitter: QSplitter
     __orientation: Orientation.Orientation
 
-    def __init__(self, expand_to: int, expand_min: int = None, expand_max: int = None, collapsible: bool = True):
+    def __init__(self, expand_to: int = None, expand_min: int = None, expand_max: int = None, collapsible: bool = True):
         self.expand_to: int = expand_to
         self.expand_min: int = expand_min
         self.expand_max: int = expand_max

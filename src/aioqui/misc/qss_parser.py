@@ -2,7 +2,7 @@ from typing import Any
 
 
 class StyleSheetParser:
-    properties: dict[str, Any] = {}
+    props: dict[str, Any] = {}
 
     def parse(self, stylesheet: str):
         stylesheet = stylesheet.replace('{', '')
@@ -12,17 +12,17 @@ class StyleSheetParser:
         dicts = [d for d in dicts if len(d)]
         for d in dicts:
             r = d.split(':')
-            self.properties[r[0]] = r[1]
+            self.props[r[0]] = r[1]
 
     def __setitem__(self, key, value):
-        self.properties[key] = value
+        self.props[key] = value
 
     def __getitem__(self, item):
-        return self.properties[item]
+        return self.props[item]
 
     def styleSheet(self):
         stylesheet = ''
-        for key, value in self.properties.items():
+        for key, value in self.props.items():
             stylesheet += f'{key}: {value};'
         return stylesheet
 

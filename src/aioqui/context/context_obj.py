@@ -3,7 +3,7 @@ from contextlib import suppress
 from loguru import logger
 import uuid
 
-from .contextapi import CONTEXT
+from .context_api import CONTEXT
 from ..types import QSS, Size, Event, Icon, Parent, Alignment, SizePolicy
 
 

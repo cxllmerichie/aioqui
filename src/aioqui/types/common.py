@@ -5,4 +5,4 @@ from typing import Callable, Awaitable, Iterable, Optional, Any, Union
 Parent: type = QWidget
 QSS: type = Optional[str | Iterable[str]]
 Event = Callable[..., Union[Awaitable, Any]]
-DefaultEvent = lambda: None
+DefaultEvent: Callable[..., None] = lambda: None

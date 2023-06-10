@@ -37,7 +37,7 @@ async def select_file(
 async def explore_file(
         filepath: str
 ) -> None:
-    if os.path.isdir(filepath):
+    if os.path.isfile(filepath):
         os.startfile(filepath)
 
 
