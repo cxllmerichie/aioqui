@@ -67,7 +67,7 @@ class ContextObj:
 
             margins: tuple[int, int, int, int] = None,
             # padding: ? = ?,
-            alignment: Alignment.Alignment = None,
+            alignment: Alignment.Alignment = None,  # make `alignment` to be `align` in the future
             spacing: int = None,
 
             size: Size = None,
@@ -180,7 +180,7 @@ class ContextObj:
             if hasattr(self, 'clicked'):  # QPushButton, ...
                 await self._connect_event(self.clicked, on_click)
             elif hasattr(self, 'mousePressEvent'):  # QLabel, QFrame, ...
-                self.mousePressEvent = lambda event: self.emit_event(on_click)
+                self.mousePressEvent = lambda event: self._emit(on_click)
             else:
                 self._event_error('on_click')
 

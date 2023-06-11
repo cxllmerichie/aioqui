@@ -1,5 +1,6 @@
-from PySide6.QtGui import QIcon
 from contextlib import suppress
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import QSize, QBuffer, QIODevice
 
 from ..button import Button
 from .popup import Popup
@@ -11,8 +12,6 @@ from . import qss
 
 class ImageButton(Button):
     RemoveBtn: Button
-
-    bytes: bytes = None
 
     def __init__(self, parent: Parent, name: str = None, visible: bool = True):
         super().__init__(parent, name if name else self.__class__.__name__, visible)
@@ -34,15 +33,23 @@ class ImageButton(Button):
         ''')
         return self
 
+    @property
+    def bytes(self):
+        buffer = QBuffer()
+        buffer.open(QIODevice.WriteOnly)
+        self.icon().pixmap(QSize(256, 256)).save(buffer, 'JPG')
+        buffer.close()
+        # if (data := bytes(buffer.data())) == b'':
+        #     return None
+        # return data
+        return bytes(buffer.data())
+
     def remove_image(self):
         super().setIcon(QIcon())
-        self.bytes = None
         with suppress(AttributeError):
             self.RemoveBtn.setVisible(False)
-        print('cl')
 
     def setIcon(self, icon: QIcon) -> None:
-        self.bytes = Icon.bytes(icon, self.iconSize())
         super().setIcon(icon)
         with suppress(AttributeError):
             self.RemoveBtn.setVisible(True)

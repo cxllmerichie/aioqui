@@ -16,7 +16,7 @@ class StateButton(Button):
 
     async def init(
             self, *,
-            icon_true: Icon = None, icon_false: Icon = None, pre_slot: Callable[..., bool],
+            icon_true: Icon = None, icon_false: Icon = None, event: Callable[..., bool],
             **kwargs
     ) -> 'StateButton':
         if icon_false:
@@ -27,11 +27,11 @@ class StateButton(Button):
             self.setIconSize(icon_true.size)
         if icon_false:
             self.icon_false = icon_false
-        return await Button.init(self, on_click=lambda: self.__mainevent(pre_slot), **kwargs)
+        return await super().init(self, on_click=lambda: self.__mainevent(event), **kwargs)
 
     @asyncSlot()
-    async def __mainevent(self, pre_slot: Callable[..., Awaitable[bool]]) -> None:
-        if await pre_slot():
+    async def __mainevent(self, event: Callable[..., Awaitable[bool]]) -> None:
+        if await event():
             self.state = not self.state
 
     @property

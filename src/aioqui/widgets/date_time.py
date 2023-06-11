@@ -6,7 +6,7 @@ from ..types import Parent, QSS
 
 
 class DateTime(ContextObj, QDateTimeEdit):
-    format: str = '%d.%m.%Y'
+    format: str = '%d.%m.%Y %H:%M'
 
     def __init__(
             self, parent: Parent, name: str, visible: bool = True, qss: QSS = None,
