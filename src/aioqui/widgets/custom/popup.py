@@ -41,16 +41,16 @@ class Popup(LogicButton, Frame):
                                 spacing=20,
                                 items=[
                                     await Button(self, f'{self.objectName()}YesBtn', Popup.YES in self.buttons).init(
-                                        text='Yes', on_click=lambda: self.__mainevent(self.on_success)
+                                        text='Yes', on_click=lambda: self.__event(self.on_success)
                                     ),
                                     await Button(self, f'{self.objectName()}NoBtn', Popup.NO in self.buttons).init(
-                                        text='No', on_click=lambda: self.__mainevent(self.on_failure)
+                                        text='No', on_click=lambda: self.__event(self.on_failure)
                                     ),
                                     await Button(self, f'{self.objectName()}OkBtn', Popup.OK in self.buttons).init(
-                                        text='Ok', on_click=lambda: self.__mainevent(self.on_success)
+                                        text='Ok', on_click=lambda: self.__event(self.on_success)
                                     ),
                                     await Button(self, f'{self.objectName()}CancelBtn', Popup.CANCEL in self.buttons).init(
-                                        text='Cancel', on_click=lambda: self.__mainevent(self.on_failure)
+                                        text='Cancel', on_click=lambda: self.__event(self.on_failure)
                                     )
                                 ]
                             )
@@ -62,7 +62,7 @@ class Popup(LogicButton, Frame):
         self.show()
 
     @asyncSlot()
-    async def __mainevent(self, event: Event):
+    async def __event(self, event: Event):
         self._emit(event)
         self.deleteLater()
 

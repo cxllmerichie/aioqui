@@ -19,18 +19,13 @@ class StateButton(Button):
             icon_true: Icon = None, icon_false: Icon = None, event: Callable[..., bool],
             **kwargs
     ) -> 'StateButton':
-        if icon_false:
-            self.setIcon(QIcon(icon_false.icon))
-            self.setIconSize(icon_false.size)
-        if icon_true:
-            self.icon_true = icon_true
-            self.setIconSize(icon_true.size)
-        if icon_false:
-            self.icon_false = icon_false
-        return await super().init(self, on_click=lambda: self.__mainevent(event), **kwargs)
+        self.icon_true = icon_true or self.icon_true
+        self.icon_false = icon_false or self.icon_false
+        self.state = False
+        return await super().init(on_click=lambda: self.__event(event), **kwargs)
 
     @asyncSlot()
-    async def __mainevent(self, event: Callable[..., Awaitable[bool]]) -> None:
+    async def __event(self, event: Callable[..., Awaitable[bool]]) -> None:
         if await event():
             self.state = not self.state
 
