@@ -7,7 +7,7 @@ from ..context import ContextObj
 
 class Label(ContextObj, Alignment, SizePolicy, ElideMode, QLabel):
     __elide_mode: ElideMode.ElideMode
-    __elide_text: str
+    __pre_elilded_text: str = None
 
     def __init__(self, parent: Parent, name: str, visible: bool = True, qss: QSS = None):
         QLabel.__init__(self, parent)
@@ -23,17 +23,17 @@ class Label(ContextObj, Alignment, SizePolicy, ElideMode, QLabel):
         self.setWordWrap(wrap)
         return await self._render(**kwargs)
 
-    def paintEvent(self, event: QPaintEvent):
-        if self.elided():
-            elided_text = self.text()
-            self.setText(QFontMetrics(self.font()).elidedText(elided_text, self.__elide_mode, self.width() - 10))
-            self.__elide_text = elided_text
+    def paintEvent(self, event: QPaintEvent) -> None:
+        if self.is_elided:
+            text = self.__pre_elilded_text
+            self.setText(QFontMetrics(self.font()).elidedText(self.__pre_elilded_text, self.__elide_mode, self.width() - 10))
+            self.__pre_elilded_text = text
         QLabel.paintEvent(self, event)
 
-    def elided(self) -> bool:
+    @property
+    def is_elided(self) -> bool:
         return self.__elide_mode is not None
 
     def setText(self, text: str) -> None:
-        if self.elided():
-            self.__elide_text = text
+        self.__pre_elilded_text = text
         QLabel.setText(self, text)

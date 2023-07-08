@@ -11,21 +11,11 @@ class CentralWidget(Frame):
         self.setLayout(await Layout.vertical(self).init(
             margins=(50, 50, 50, 50),
             items=[
-                await Button(self, 'Btn').init(
-                    on_click=lambda: self.Lbl.setText('Temporary text')
-                ),
-                await DurationLabel(self, 'Lbl').init(
-
-                ),
-                await Input.line(self, 'LInp1').init(
-                    placeholder='hello there'
-                ),
-                await Input.line(self, 'LInp2').init(
-                    placeholder='hello there'
+                await Label(self, 'Lbl').init(
+                    text='long' * 10, elide=Label.ElideRight
                 )
             ]
         ))
-        self.LInp1.setPlaceholderText('color: black;')
         return self
 
 
