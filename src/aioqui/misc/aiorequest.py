@@ -3,8 +3,40 @@ from contextlib import suppress
 from ast import literal_eval
 from typing import Any
 from uuid import UUID
-from functools import cache
+from functools import lru_cache, wraps
 import ujson
+
+
+_unset = ['unset']
+
+
+class CachedAwaitable:
+    def __init__(self, awaitable):
+        self.awaitable = awaitable
+        self.result = _unset
+
+    def __await__(self):
+        if self.result is _unset:
+            self.result = yield from self.awaitable.__await__()
+        return self.result
+
+
+def reawaitable(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        return CachedAwaitable(func(*args, **kwargs))
+    return wrapper
+
+
+def aiocache(maxsize=128, typed=False):
+    if callable(maxsize) and isinstance(typed, bool):
+        user_function, maxsize = maxsize, 128
+        return lru_cache(maxsize, typed)(reawaitable(user_function))
+
+    def decorating_function(user_function):
+        return lru_cache(maxsize, typed)(reawaitable(user_function))
+
+    return decorating_function
 
 
 class Request:
@@ -27,12 +59,12 @@ class Request:
         async with ClientSession(json_serialize=ujson.dumps) as session:
             async with getattr(session, method)(
                     await self.__url(url),
-                    json=self.serialize(body), params=params, headers=headers, data=data
+                    json=await self.serialize(body), params=params, headers=headers, data=data
             ) as response:
                 with suppress(Exception):
                     json = await response.json()
                     if deserialize:
-                        json = self.pythonize(json)
+                        json = await self.deserialize(json)
                     return json
 
     async def get(self, url: str, **kwargs) -> Any:
@@ -47,7 +79,7 @@ class Request:
     async def delete(self, url: str, **kwargs) -> Any:
         return await self('delete', url, **kwargs)
 
-    @cache
+    @aiocache
     async def __url(self, url: str):
         if not (base := self.baseurl) or url.startswith('http'):
             return url
@@ -60,8 +92,8 @@ class Request:
         return f'{base}/{url}'
 
     @staticmethod
-    @cache
-    def serialize(data: Any) -> Any:
+    @aiocache
+    async def serialize(data: Any) -> Any:
         if isinstance(data, dict):
             return {key: Request.serialize(value) for key, value in data.items()}
         if isinstance(data, list):
@@ -71,8 +103,8 @@ class Request:
         return str(data)
 
     @staticmethod
-    @cache
-    def pythonize(json: Any) -> Any:
+    @aiocache
+    async def deserialize(json: Any) -> Any:
         from dateutil import parser  # imported in the function, since package is not built-in
 
         # handles dict
