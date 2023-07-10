@@ -3,3 +3,4 @@ from .popup import qss as Popup
 from .searchbar import qss as SearchBar
 from .image_button import qss as ImageButton
 from .scrollbar import qss as ScrollBar
+from .colors import gradient

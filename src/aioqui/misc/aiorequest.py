@@ -3,6 +3,7 @@ from contextlib import suppress
 from ast import literal_eval
 from typing import Any
 from uuid import UUID
+from functools import cache
 import ujson
 
 
@@ -17,8 +18,7 @@ class Request:
             headers: dict[str, Any] = None,
             body: dict[str, Any] = None,
             data: dict[str, Any] = None,
-            nobase: bool = False,
-            pythonize: bool = False
+            deserialize: bool = False
     ) -> Any:
         if params:  # convert params values to str
             params = {key: str(value) for key, value in params.items()}
@@ -26,16 +26,14 @@ class Request:
             raise NotImplementedError(f'method: {method} is not supported by `aiorequest.request`')
         async with ClientSession(json_serialize=ujson.dumps) as session:
             async with getattr(session, method)(
-                    await self.__url(url, nobase),
+                    await self.__url(url),
                     json=self.serialize(body), params=params, headers=headers, data=data
             ) as response:
-                try:
+                with suppress(Exception):
                     json = await response.json()
-                    if pythonize:
+                    if deserialize:
                         json = self.pythonize(json)
                     return json
-                except Exception:
-                    print(await response.text())
 
     async def get(self, url: str, **kwargs) -> Any:
         return await self('get', url, **kwargs)
@@ -49,8 +47,9 @@ class Request:
     async def delete(self, url: str, **kwargs) -> Any:
         return await self('delete', url, **kwargs)
 
-    async def __url(self, url: str, nobase: bool = False):
-        if not (base := self.baseurl) or nobase:
+    @cache
+    async def __url(self, url: str):
+        if not (base := self.baseurl) or url.startswith('http'):
             return url
         if base.endswith('/') and url.startswith('/'):
             return base[:-1] + url
@@ -58,10 +57,10 @@ class Request:
             return base + url
         if not base.endswith('/') and url.startswith('/'):
             return base + url
-        # if not base.endswith('/') and not url.startswith('/'):
         return f'{base}/{url}'
 
     @staticmethod
+    @cache
     def serialize(data: Any) -> Any:
         if isinstance(data, dict):
             return {key: Request.serialize(value) for key, value in data.items()}
@@ -72,16 +71,16 @@ class Request:
         return str(data)
 
     @staticmethod
+    @cache
     def pythonize(json: Any) -> Any:
+        from dateutil import parser  # imported in the function, since package is not built-in
+
         # handles dict
         if isinstance(json, dict):
             return {key: Request.pythonize(value) for key, value in json.items()}
         # handles list
         if isinstance(json, list):
             return [Request.pythonize(element) for element in json]
-        # converts the value
-        from dateutil import parser  # imported in the function, since package is not built-in
-
         # 'ed38fe7a-11e6-4c59-ac31-ef30848e8e83' to UUID('ed38fe7a-11e6-4c59-ac31-ef30848e8e83')
         with suppress(Exception):
             return UUID(json)
