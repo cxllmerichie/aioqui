@@ -1,22 +1,22 @@
 from aiohttp import ClientSession
 from contextlib import suppress
+from functools import lru_cache, wraps
 from ast import literal_eval
 from typing import Any
 from uuid import UUID
-from functools import lru_cache, wraps
 import ujson
 
 
-_unset = ['unset']
+unset = ['unser']
 
 
 class CachedAwaitable:
     def __init__(self, awaitable):
         self.awaitable = awaitable
-        self.result = _unset
+        self.result = unset
 
     def __await__(self):
-        if self.result is _unset:
+        if self.result is unset:
             self.result = yield from self.awaitable.__await__()
         return self.result
 
@@ -61,11 +61,13 @@ class Request:
                     await self.__url(url),
                     json=await self.serialize(body), params=params, headers=headers, data=data
             ) as response:
-                with suppress(Exception):
+                try:
                     json = await response.json()
                     if deserialize:
                         json = await self.deserialize(json)
                     return json
+                except Exception as error:
+                    return error
 
     async def get(self, url: str, **kwargs) -> Any:
         return await self('get', url, **kwargs)
@@ -79,7 +81,7 @@ class Request:
     async def delete(self, url: str, **kwargs) -> Any:
         return await self('delete', url, **kwargs)
 
-    @aiocache
+    # @aiocache
     async def __url(self, url: str):
         if not (base := self.baseurl) or url.startswith('http'):
             return url
@@ -89,30 +91,32 @@ class Request:
             return base + url
         if not base.endswith('/') and url.startswith('/'):
             return base + url
+        # if not base.endswith('/') and not url.startswith('/'):
         return f'{base}/{url}'
 
     @staticmethod
-    @aiocache
+    # @aiocache
     async def serialize(data: Any) -> Any:
         if isinstance(data, dict):
-            return {key: Request.serialize(value) for key, value in data.items()}
+            return {key: await Request.serialize(value) for key, value in data.items()}
         if isinstance(data, list):
-            return [Request.serialize(element) for element in data]
+            return [await Request.serialize(element) for element in data]
         if isinstance(data, (int, float, bool, str)) or data is None:
             return data
         return str(data)
 
     @staticmethod
-    @aiocache
+    # @aiocache
     async def deserialize(json: Any) -> Any:
-        from dateutil import parser  # imported in the function, since package is not built-in
-
         # handles dict
         if isinstance(json, dict):
-            return {key: Request.pythonize(value) for key, value in json.items()}
+            return {key: await Request.deserialize(value) for key, value in json.items()}
         # handles list
         if isinstance(json, list):
-            return [Request.pythonize(element) for element in json]
+            return [await Request.deserialize(element) for element in json]
+        # converts the value
+        from dateutil import parser  # imported in the function, since package is not built-in
+
         # 'ed38fe7a-11e6-4c59-ac31-ef30848e8e83' to UUID('ed38fe7a-11e6-4c59-ac31-ef30848e8e83')
         with suppress(Exception):
             return UUID(json)
