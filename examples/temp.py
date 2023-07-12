@@ -1,22 +1,23 @@
 from functools import cache, wraps
-from asyncio import get_event_loop, AbstractEventLoop, new_event_loop
+from asyncio import AbstractEventLoop, new_event_loop
+from typing import Awaitable, Any, Callable
 
 
 LOOP: AbstractEventLoop = new_event_loop()
 
 
-from functools import cache, wraps
-from typing import Awaitable, Any, Callable
-
-
 class CachedAwaitable:
+    _is_inset: str = 'CachedAwaitableResultUnset'
+
     def __init__(self, awaitable: Awaitable):
         self.awaitable: Awaitable = awaitable
-        self.result: Any = None
+        self.result: Any = self._is_inset
 
     def __await__(self) -> Any:
-        if not self.result:
+        if self.result == self._is_inset:
             self.result = yield from self.awaitable.__await__()
+        else:
+            print(self.result, self.awaitable, 'CACHED')
         return self.result
 
 
@@ -43,7 +44,16 @@ async def fibonacci(input_value):
         return await fibonacci(input_value - 1) + await fibonacci(input_value - 2)
 
 
+@aiocache
+async def wtf(x):
+    return x ** 2
+
+
 async def amain():
+    for i in range(1, 201):
+        print(f'fib({i}) = {await fibonacci(i)}')
+    print(await wtf(2))
+    print(await wtf(2))
     for i in range(1, 201):
         print(f'fib({i}) = {await fibonacci(i)}')
 
