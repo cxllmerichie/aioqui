@@ -9,6 +9,8 @@ import ujson
 
 from .utils import aiocache
 
+# ToDo: "TypeError: unhashable type: 'dict'"
+
 
 JsonProcessed: type = Optional[
     Union[
@@ -60,7 +62,7 @@ async def delete(url: str, **kwargs) -> JsonProcessed:
     return await request('delete', url, **kwargs)
 
 
-@aiocache
+# @aiocache
 async def _concat(url: str):
     if not (base := baseurl) or url.startswith('http'):
         return url
@@ -71,7 +73,7 @@ async def _concat(url: str):
     return f'{base}/{url}'
 
 
-@aiocache
+# @aiocache
 async def _serialize(data: JsonProcessed) -> Any:
     if isinstance(data, dict):
         return {key: await _serialize(value) for key, value in data.items()}
@@ -82,7 +84,7 @@ async def _serialize(data: JsonProcessed) -> Any:
     return str(data)
 
 
-@aiocache
+# @aiocache
 async def _deserialize(json: Any) -> JsonProcessed:
     # handles dict recursively
     if isinstance(json, dict):
